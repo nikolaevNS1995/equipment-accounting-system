@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('cabinet_types', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

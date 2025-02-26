@@ -13,7 +13,16 @@ return new class extends Migration
     {
         Schema::create('cabinets', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('cabinet_type_id');
+            $table->unsignedBigInteger('building_id');
+            $table->string('title');
+            $table->integer('cabinet_number');
+            $table->integer('floor');
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('cabinet_type_id')->references('id')->on('cabinet_types');
+            $table->foreign('building_id')->references('id')->on('buildings');
         });
     }
 

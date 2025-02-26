@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('furniture', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('furniture_type_id');
+            $table->unsignedBigInteger('cabinet_id')->nullable();
+            $table->unsignedBigInteger('inventory_number');
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('furniture_type_id')->references('id')->on('furniture_types');
+            $table->foreign('cabinet_id')->references('id')->on('cabinets');
         });
     }
 
