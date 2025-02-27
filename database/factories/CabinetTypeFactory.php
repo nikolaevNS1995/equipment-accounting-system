@@ -16,8 +16,10 @@ class CabinetTypeFactory extends Factory
      */
     public function definition(): array
     {
+        static $types = ['Обычный', 'Лабораторный', 'Конференц'];
+
         return [
-            //
+            'title' => array_shift($types),
         ];
     }
 }

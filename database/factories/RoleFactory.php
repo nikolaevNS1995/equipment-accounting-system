@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\EquipmentType>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Role>
  */
-class EquipmentTypeFactory extends Factory
+class RoleFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -16,10 +16,10 @@ class EquipmentTypeFactory extends Factory
      */
     public function definition(): array
     {
-        static $types = ['Компьютер', 'Принтер', 'Сканер', 'Монитор'];
+        static $roles = ['Админ', 'Инженер', 'Сотрудник'];
 
         return [
-            'title' => array_shift($types),
+            'title' => array_shift($roles),
         ];
     }
 }
