@@ -19,8 +19,10 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('furniture_type_id')->references('id')->on('furniture_types');
-            $table->foreign('cabinet_id')->references('id')->on('cabinets');
+            $table->index('cabinet_id');
+
+            $table->foreign('furniture_type_id')->references('id')->on('furniture_types')->onDelete('cascade');
+            $table->foreign('cabinet_id')->references('id')->on('cabinets')->onDelete('cascade');
         });
     }
 

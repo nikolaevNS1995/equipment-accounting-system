@@ -18,6 +18,8 @@ return new class extends Migration
             $table->integer('floor');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index('title');
         });
     }
 
