@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\EquipmentModel;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreEquipmentModelRequest extends FormRequest
+class UpdateEquipmentModelRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class StoreEquipmentModelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'equipment_brand_id' => 'required|exists:equipment_brands,id',
+            'title' => 'required|string',
         ];
     }
 }
