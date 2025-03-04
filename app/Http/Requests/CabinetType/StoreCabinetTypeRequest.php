@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\CabinetType;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateCabinetTypeRequest extends FormRequest
+class StoreCabinetTypeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class UpdateCabinetTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => 'required|string',
         ];
     }
 }
