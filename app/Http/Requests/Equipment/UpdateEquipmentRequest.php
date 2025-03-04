@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Equipment;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -11,7 +11,7 @@ class UpdateEquipmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class UpdateEquipmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'equipment_model_id' => 'required|exists:equipment_models,id',
+            'cabinet_id' => 'required|exists:cabinets,id',
+            'inventory_number' => 'required|integer',
         ];
     }
 }
