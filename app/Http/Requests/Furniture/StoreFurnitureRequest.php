@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Furniture;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreFurnitureTypeRequest extends FormRequest
+class StoreFurnitureRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class StoreFurnitureTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'furniture_type_id' => 'required|exists:furniture_types,id',
+            'cabinet_id' => 'required|exists:cabinets,id',
+            'inventory_number' => 'required|integer',
         ];
     }
 }
