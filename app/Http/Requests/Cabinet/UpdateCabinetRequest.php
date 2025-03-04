@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Cabinet;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreBuildingRequest extends FormRequest
+class UpdateCabinetRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class StoreBuildingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'cabinet_type_id' => 'required|exists:cabinet_types,id',
+            'building_id' => 'required|exists:buildings,id',
+            'title' => 'required|string',
+            'cabinet_number' => 'required|integer',
+            'floor' => 'required|integer',
         ];
     }
 }

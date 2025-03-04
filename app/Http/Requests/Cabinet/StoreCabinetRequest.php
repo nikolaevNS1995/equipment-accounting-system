@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Cabinet;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -11,7 +11,7 @@ class StoreCabinetRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class StoreCabinetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'cabinet_type_id' => 'required|exists:cabinet_types,id',
+            'building_id' => 'required|exists:buildings,id',
+            'title' => 'required|string',
+            'cabinet_number' => 'required|integer',
+            'floor' => 'required|integer',
         ];
     }
 }
