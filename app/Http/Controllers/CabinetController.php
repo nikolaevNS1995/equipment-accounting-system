@@ -7,6 +7,7 @@ use App\Http\Requests\Cabinet\UpdateCabinetRequest;
 use App\Http\Resources\Cabinet\IndexResource;
 use App\Http\Resources\Cabinet\ShowResource;
 use App\Models\Cabinet;
+use App\Models\Building;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
@@ -56,5 +57,11 @@ class CabinetController extends Controller
     {
         $cabinet->delete();
         return response()->noContent();
+    }
+
+    public function getCabinetsByFloor(Building $building, int $floor): AnonymousResourceCollection
+    {
+        $cabinets = Cabinet::where('building_id', $building->id)->where('floor', $floor)->get();
+        return IndexResource::collection($cabinets);
     }
 }

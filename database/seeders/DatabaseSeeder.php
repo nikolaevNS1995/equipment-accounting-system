@@ -10,6 +10,7 @@ use App\Models\EquipmentModel;
 use App\Models\EquipmentType;
 use App\Models\Furniture;
 use App\Models\FurnitureType;
+use App\Models\Order;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Building;
@@ -47,5 +48,8 @@ class DatabaseSeeder extends Seeder
         // Создаем типы мебели и мебель
         FurnitureType::factory(5)->create();
         Furniture::factory(5)->create();
+
+        // Создаем наряды
+        Order::factory()->count(3)->withItems(4)->create();
     }
 }
