@@ -22,7 +22,7 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
     Route::post('me', [AuthController::class, 'me']);
 });
 
-Route::group(['middleware' => 'api'], function () {
+Route::group(['middleware' => 'auth:api'], function () {
     Route::apiResource('buildings', BuildingController::class);
     Route::apiResource('cabinets', CabinetController::class);
     Route::get('cabinets/buildings/{building}/floor/{floor}', [CabinetController::class, 'getCabinetsByFloor']);

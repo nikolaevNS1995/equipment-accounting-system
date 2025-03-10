@@ -10,6 +10,7 @@ use App\Models\Cabinet;
 use App\Models\Building;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 
 class CabinetController extends Controller
 {
@@ -18,6 +19,7 @@ class CabinetController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
+        Gate::authorize('viewAny', Cabinet::class);
         $cabinets = Cabinet::get();
         return IndexResource::collection($cabinets);
     }
@@ -27,6 +29,7 @@ class CabinetController extends Controller
      */
     public function store(StoreCabinetRequest $request): ShowResource
     {
+        Gate::authorize('create', Cabinet::class);
         $data = $request->validated();
         $cabinet = Cabinet::create($data);
         return new ShowResource($cabinet);
@@ -37,6 +40,7 @@ class CabinetController extends Controller
      */
     public function show(Cabinet $cabinet): ShowResource
     {
+        Gate::authorize('view', $cabinet);
         return new ShowResource($cabinet);
     }
 
@@ -45,6 +49,7 @@ class CabinetController extends Controller
      */
     public function update(UpdateCabinetRequest $request, Cabinet $cabinet): ShowResource
     {
+        Gate::authorize('update', $cabinet);
         $data = $request->validated();
         $cabinet->update($data);
         return new ShowResource($cabinet);
@@ -55,12 +60,14 @@ class CabinetController extends Controller
      */
     public function destroy(Cabinet $cabinet): Response
     {
+        Gate::authorize('delete', $cabinet);
         $cabinet->delete();
         return response()->noContent();
     }
 
     public function getCabinetsByFloor(Building $building, int $floor): AnonymousResourceCollection
     {
+        Gate::authorize('viewAny', Cabinet::class);
         $cabinets = Cabinet::where('building_id', $building->id)->where('floor', $floor)->get();
         return IndexResource::collection($cabinets);
     }

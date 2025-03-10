@@ -9,6 +9,7 @@ use App\Http\Resources\User\ShowResource;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -18,6 +19,7 @@ class UserController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
+        Gate::authorize('viewAny', User::class);
         $users = User::get();
         return IndexResource::collection($users);
     }
@@ -27,6 +29,7 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request): ShowResource
     {
+        Gate::authorize('create', User::class);
         $data = $request->validated();
         $data['password'] = Hash::make($data['password']);
         $roles = $data['roles'];
@@ -42,6 +45,7 @@ class UserController extends Controller
      */
     public function show(User $user): ShowResource
     {
+        Gate::authorize('view', $user);
         return new ShowResource($user);
     }
 
@@ -50,6 +54,7 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user): ShowResource
     {
+        Gate::authorize('update', $user);
         $data = $request->validated();
         if ($data['password']) {
             $data['password'] = Hash::make($data['password']);
@@ -67,6 +72,7 @@ class UserController extends Controller
      */
     public function destroy(User $user): Response
     {
+        Gate::authorize('delete', $user);
         $user->role()->detach();
         $user->delete();
         return response()->noContent();

@@ -9,6 +9,7 @@ use App\Http\Resources\Order\ShowResource;
 use App\Models\Order;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
@@ -17,6 +18,7 @@ class OrderController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
+        Gate::authorize('viewAny', Order::class);
         $orders = Order::get();
         return IndexResource::collection($orders);
     }
@@ -26,13 +28,11 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request): ShowResource
     {
+        Gate::authorize('create', Order::class);
         $data = $request->validated();
-
         $items = $data['items'];
         unset($data['items']);
-
         $order = Order::create($data);
-
         foreach ($items as $item) {
             if ($item['orderable_type'] === 'App\Models\Equipment') {
                 $order->equipments()->attach($item);
@@ -41,7 +41,6 @@ class OrderController extends Controller
                 $order->furnitures()->attach($item);
             }
         }
-
         return new ShowResource($order);
     }
 
@@ -50,6 +49,7 @@ class OrderController extends Controller
      */
     public function show(Order $order): ShowResource
     {
+        Gate::authorize('view', $order);
         return new ShowResource($order);
     }
 
@@ -58,6 +58,7 @@ class OrderController extends Controller
      */
     public function update(UpdateOrderRequest $request, Order $order): ShowResource
     {
+        Gate::authorize('update', $order);
         $data = $request->validated();
         $items = $data['items'];
         unset($data['items']);
@@ -78,6 +79,7 @@ class OrderController extends Controller
      */
     public function destroy(Order $order): Response
     {
+        Gate::authorize('delete', $order);
         $order->equipments()->detach();
         $order->furnitures()->detach();
         $order->delete();

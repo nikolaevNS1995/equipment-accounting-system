@@ -9,6 +9,7 @@ use App\Http\Resources\Building\ShowResource;
 use App\Models\Building;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 
 class BuildingController extends Controller
 {
@@ -17,6 +18,7 @@ class BuildingController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
+        Gate::authorize('viewAny', Building::class);
         $buildings = Building::get();
         return IndexResource::collection($buildings);
     }
@@ -26,6 +28,7 @@ class BuildingController extends Controller
      */
     public function store(StoreBuildingRequest $request): ShowResource
     {
+        Gate::authorize('create', Building::class);
         $data = $request->validated();
         $building = Building::create($data);
 
@@ -37,6 +40,7 @@ class BuildingController extends Controller
      */
     public function show(Building $building): ShowResource
     {
+        Gate::authorize('view', $building);
         return new ShowResource($building);
     }
 
@@ -45,6 +49,7 @@ class BuildingController extends Controller
      */
     public function update(UpdateBuildingRequest $request, Building $building): ShowResource
     {
+        Gate::authorize('update', $building);
         $data = $request->validated();
         $building->update($data);
         return new ShowResource($building);
@@ -55,6 +60,7 @@ class BuildingController extends Controller
      */
     public function destroy(Building $building): Response
     {
+        Gate::authorize('delete', $building);
         $building->delete();
         return response()->noContent();
     }

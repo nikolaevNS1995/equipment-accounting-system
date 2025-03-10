@@ -9,6 +9,7 @@ use App\Http\Resources\CabinetType\ShowResource;
 use App\Models\CabinetType;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 
 class CabinetTypeController extends Controller
 {
@@ -17,6 +18,7 @@ class CabinetTypeController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
+        Gate::authorize('viewAny', CabinetType::class);
         $cabinetTypes = CabinetType::get();
         return IndexResource::collection($cabinetTypes);
     }
@@ -26,6 +28,7 @@ class CabinetTypeController extends Controller
      */
     public function store(StoreCabinetTypeRequest $request): ShowResource
     {
+        Gate::authorize('create', CabinetType::class);
         $data = $request->validated();
         $cabinetType = CabinetType::create($data);
         return new ShowResource($cabinetType);
@@ -36,6 +39,7 @@ class CabinetTypeController extends Controller
      */
     public function show(CabinetType $cabinetType): ShowResource
     {
+        Gate::authorize('view', $cabinetType);
         return new ShowResource($cabinetType);
     }
 
@@ -44,6 +48,7 @@ class CabinetTypeController extends Controller
      */
     public function update(UpdateCabinetTypeRequest $request, CabinetType $cabinetType): ShowResource
     {
+        Gate::authorize('update', $cabinetType);
         $data = $request->validated();
         $cabinetType->update($data);
         return new ShowResource($cabinetType);
@@ -54,6 +59,7 @@ class CabinetTypeController extends Controller
      */
     public function destroy(CabinetType $cabinetType): Response
     {
+        Gate::authorize('delete', $cabinetType);
         $cabinetType->delete();
         return response()->noContent();
     }

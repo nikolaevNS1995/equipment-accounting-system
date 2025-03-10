@@ -9,6 +9,7 @@ use App\Http\Resources\Furniture\ShowResource;
 use App\Models\Furniture;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 
 class FurnitureController extends Controller
 {
@@ -17,6 +18,7 @@ class FurnitureController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
+        Gate::authorize('viewAny', Furniture::class);
         $furniture = Furniture::get();
         return IndexResource::collection($furniture);
     }
@@ -26,6 +28,7 @@ class FurnitureController extends Controller
      */
     public function store(StoreFurnitureRequest $request): ShowResource
     {
+        Gate::authorize('create', Furniture::class);
         $data = $request->validated();
         $furniture = Furniture::create($data);
         return new ShowResource($furniture);
@@ -36,6 +39,7 @@ class FurnitureController extends Controller
      */
     public function show(Furniture $furniture): ShowResource
     {
+        Gate::authorize('view', $furniture);
         return new ShowResource($furniture);
     }
 
@@ -44,6 +48,7 @@ class FurnitureController extends Controller
      */
     public function update(UpdateFurnitureRequest $request, Furniture $furniture): ShowResource
     {
+        Gate::authorize('update', $furniture);
         $data = $request->validated();
         $furniture->update($data);
         return new ShowResource($furniture);
@@ -54,6 +59,7 @@ class FurnitureController extends Controller
      */
     public function destroy(Furniture $furniture): Response
     {
+        Gate::authorize('delete', $furniture);
         $furniture->delete();
         return response()->noContent();
     }

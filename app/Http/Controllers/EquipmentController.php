@@ -9,6 +9,7 @@ use App\Http\Resources\Equipment\ShowResource;
 use App\Models\Equipment;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 
 class EquipmentController extends Controller
 {
@@ -17,6 +18,7 @@ class EquipmentController extends Controller
      */
     public function index(): AnonymousResourceCollection
     {
+        Gate::authorize('viewAny', Equipment::class);
         $equipments = Equipment::get();
         return IndexResource::collection($equipments);
     }
@@ -26,6 +28,7 @@ class EquipmentController extends Controller
      */
     public function store(StoreEquipmentRequest $request): ShowResource
     {
+        Gate::authorize('create', Equipment::class);
         $data = $request->validated();
         $equipment = Equipment::create($data);
         return new ShowResource($equipment);
@@ -36,6 +39,7 @@ class EquipmentController extends Controller
      */
     public function show(Equipment $equipment): ShowResource
     {
+        Gate::authorize('view', $equipment);
         return new ShowResource($equipment);
     }
 
@@ -44,6 +48,7 @@ class EquipmentController extends Controller
      */
     public function update(UpdateEquipmentRequest $request, Equipment $equipment): ShowResource
     {
+        Gate::authorize('update', $equipment);
         $data = $request->validated();
         $equipment->update($data);
         return new ShowResource($equipment);
@@ -54,6 +59,7 @@ class EquipmentController extends Controller
      */
     public function destroy(Equipment $equipment): Response
     {
+        Gate::authorize('delete', $equipment);
         $equipment->delete();
         return response()->noContent();
     }
