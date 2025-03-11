@@ -7,31 +7,38 @@ use App\Http\Requests\Role\UpdateRoleRequest;
 use App\Http\Resources\Role\IndexResource;
 use App\Http\Resources\Role\ShowResource;
 use App\Models\Role;
+use App\Services\RoleService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
 class RoleController extends Controller
 {
+    protected RoleService $service;
+
+    public function __construct(RoleService $service)
+    {
+        $this->service = $service;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', Role::class);
-        $roles = Role::get();
-        return IndexResource::collection($roles);
+        return $this->service->index();
     }
 
     /**
      * Store a newly created resource in storage.
+     * @throws \Exception
      */
     public function store(StoreRoleRequest $request): ShowResource
     {
         Gate::authorize('create', Role::class);
         $data = $request->validated();
-        $role = Role::create($data);
-        return new ShowResource($role);
+        return $this->service->store($data);
     }
 
     /**
@@ -40,27 +47,31 @@ class RoleController extends Controller
     public function show(Role $role): ShowResource
     {
         Gate::authorize('view', $role);
-        return new ShowResource($role);
+        return $this->service->show($role);
     }
 
     /**
      * Update the specified resource in storage.
+     * @throws \Exception
      */
     public function update(UpdateRoleRequest $request, Role $role): ShowResource
     {
         Gate::authorize('update', $role);
         $data = $request->validated();
-        $role->update($data);
-        return new ShowResource($role);
+        return $this->service->update($role, $data);
     }
 
     /**
      * Remove the specified resource from storage.
+     * @throws \Exception
      */
-    public function destroy(Role $role): Response
+    public function destroy(Role $role): Response|JsonResponse
     {
         Gate::authorize('delete', $role);
-        $role->delete();
-        return response()->noContent();
+        if ($this->service->destroy($role)) {
+            return response()->noContent();
+        } else {
+            return response()->json(['message' => 'Ошибка при удаление роли'], 500);
+        }
     }
 }
