@@ -4,23 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Building\StoreBuildingRequest;
 use App\Http\Requests\Building\UpdateBuildingRequest;
-use App\Http\Resources\Building\IndexResource;
 use App\Http\Resources\Building\ShowResource;
 use App\Models\Building;
+use App\Services\BuildingService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
 class BuildingController extends Controller
 {
+    protected BuildingService $service;
+
+    public function __construct(BuildingService $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', Building::class);
-        $buildings = Building::get();
-        return IndexResource::collection($buildings);
+        return $this->service->index();
     }
 
     /**
@@ -30,9 +37,7 @@ class BuildingController extends Controller
     {
         Gate::authorize('create', Building::class);
         $data = $request->validated();
-        $building = Building::create($data);
-
-        return new ShowResource($building);
+        return $this->service->store($data);
     }
 
     /**
@@ -41,7 +46,7 @@ class BuildingController extends Controller
     public function show(Building $building): ShowResource
     {
         Gate::authorize('view', $building);
-        return new ShowResource($building);
+        return $this->service->show($building);
     }
 
     /**
@@ -51,17 +56,19 @@ class BuildingController extends Controller
     {
         Gate::authorize('update', $building);
         $data = $request->validated();
-        $building->update($data);
-        return new ShowResource($building);
+        return $this->service->update($building, $data);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Building $building): Response
+    public function destroy(Building $building): Response|JsonResponse
     {
         Gate::authorize('delete', $building);
-        $building->delete();
-        return response()->noContent();
+        if ($this->service->destroy($building)) {
+            return response()->noContent();
+        } else {
+            return response()->json(['message' => 'Ошибка при удаление площадки'], 500);
+        }
     }
 }
