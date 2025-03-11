@@ -32,6 +32,7 @@ class CabinetController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @throws \Exception
      */
     public function store(StoreCabinetRequest $request): ShowResource
     {
@@ -51,6 +52,7 @@ class CabinetController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @throws \Exception
      */
     public function update(UpdateCabinetRequest $request, Cabinet $cabinet): ShowResource
     {
@@ -61,6 +63,7 @@ class CabinetController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     * @throws \Exception
      */
     public function destroy(Cabinet $cabinet): Response|JsonResponse
     {

@@ -28,7 +28,7 @@ class BuildingRepository
         return $building->update($data);
     }
 
-    public function delete(Building $building): bool
+    public function delete(Building $building): ?bool
     {
         return $building->delete();
     }

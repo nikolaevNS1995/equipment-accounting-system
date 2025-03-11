@@ -8,7 +8,7 @@ use App\Models\Building;
 use App\Repositories\BuildingRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Mockery\Exception;
+use Exception;
 
 class BuildingService
 {
@@ -24,6 +24,9 @@ class BuildingService
         return IndexResource::collection($buildings);
     }
 
+    /**
+     * @throws Exception
+     */
     public function store(array $data): ShowResource
     {
         try {
@@ -39,6 +42,9 @@ class BuildingService
         return new ShowResource($this->repository->getById($building));
     }
 
+    /**
+     * @throws Exception
+     */
     public function update(Building $building, array $data): ShowResource
     {
         try {
@@ -49,6 +55,9 @@ class BuildingService
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function destroy(Building $building): bool
     {
         try {

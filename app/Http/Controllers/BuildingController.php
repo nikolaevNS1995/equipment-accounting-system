@@ -32,6 +32,7 @@ class BuildingController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @throws \Exception
      */
     public function store(StoreBuildingRequest $request): ShowResource
     {
@@ -51,6 +52,7 @@ class BuildingController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @throws \Exception
      */
     public function update(UpdateBuildingRequest $request, Building $building): ShowResource
     {
@@ -61,6 +63,7 @@ class BuildingController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     * @throws \Exception
      */
     public function destroy(Building $building): Response|JsonResponse
     {

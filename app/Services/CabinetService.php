@@ -9,7 +9,7 @@ use App\Models\Building;
 use App\Repositories\CabinetRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Mockery\Exception;
+use Exception;
 
 class CabinetService
 {
@@ -25,6 +25,9 @@ class CabinetService
         return IndexResource::collection($cabinets);
     }
 
+    /**
+     * @throws Exception
+     */
     public function store(array $data): ShowResource
     {
         try {
@@ -40,6 +43,9 @@ class CabinetService
         return new ShowResource($this->repository->getById($cabinet));
     }
 
+    /**
+     * @throws Exception
+     */
     public function update(Cabinet $cabinet, array $data): ShowResource
     {
         try {
@@ -51,6 +57,9 @@ class CabinetService
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function destroy(Cabinet $cabinet): bool
     {
         try {
