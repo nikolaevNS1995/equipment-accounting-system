@@ -7,41 +7,38 @@ use App\Http\Requests\Order\UpdateOrderRequest;
 use App\Http\Resources\Order\IndexResource;
 use App\Http\Resources\Order\ShowResource;
 use App\Models\Order;
+use App\Services\OrderService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
+    protected OrderService $service;
+
+    public function __construct(OrderService $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', Order::class);
-        $orders = Order::get();
-        return IndexResource::collection($orders);
+        return $this->service->index();
     }
 
     /**
      * Store a newly created resource in storage.
+     * @throws \Exception
      */
     public function store(StoreOrderRequest $request): ShowResource
     {
         Gate::authorize('create', Order::class);
         $data = $request->validated();
-        $items = $data['items'];
-        unset($data['items']);
-        $order = Order::create($data);
-        foreach ($items as $item) {
-            if ($item['orderable_type'] === 'App\Models\Equipment') {
-                $order->equipments()->attach($item);
-            }
-            if ($item['orderable_type'] === 'App\Models\Furniture') {
-                $order->furnitures()->attach($item);
-            }
-        }
-        return new ShowResource($order);
+        return $this->service->store($data);
     }
 
     /**
@@ -50,28 +47,18 @@ class OrderController extends Controller
     public function show(Order $order): ShowResource
     {
         Gate::authorize('view', $order);
-        return new ShowResource($order);
+        return $this->service->show($order);
     }
 
     /**
      * Update the specified resource in storage.
+     * @throws \Exception
      */
     public function update(UpdateOrderRequest $request, Order $order): ShowResource
     {
         Gate::authorize('update', $order);
         $data = $request->validated();
-        $items = $data['items'];
-        unset($data['items']);
-        $order->update($data);
-        foreach ($items as $item) {
-            if ($item['orderable_type'] === 'App\Models\Equipment') {
-                $order->equipments()->sync($item);
-            }
-            if ($item['orderable_type'] === 'App\Models\Furniture') {
-                $order->furnitures()->sync($item);
-            }
-        }
-        return new ShowResource($order);
+        return $this->service->update($order, $data);
     }
 
     /**
@@ -80,9 +67,7 @@ class OrderController extends Controller
     public function destroy(Order $order): Response
     {
         Gate::authorize('delete', $order);
-        $order->equipments()->detach();
-        $order->furnitures()->detach();
-        $order->delete();
+
         return response()->noContent();
     }
 }
