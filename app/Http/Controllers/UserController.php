@@ -4,40 +4,40 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
-use App\Http\Resources\User\IndexResource;
 use App\Http\Resources\User\ShowResource;
 use App\Models\User;
+use App\Services\UserService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    protected UserService $service;
+
+    public function __construct(UserService $service)
+    {
+        $this->service = $service;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', User::class);
-        $users = User::get();
-        return IndexResource::collection($users);
+        return $this->service->index();
     }
 
     /**
      * Store a newly created resource in storage.
+     * @throws \Exception
      */
     public function store(StoreUserRequest $request): ShowResource
     {
         Gate::authorize('create', User::class);
         $data = $request->validated();
-        $data['password'] = Hash::make($data['password']);
-        $roles = $data['roles'];
-        unset($data['roles']);
-        $user = User::create($data);
-        $user->role()->attach($roles);
-
-        return new ShowResource($user);
+        $this->service->store($data);
     }
 
     /**
@@ -46,35 +46,31 @@ class UserController extends Controller
     public function show(User $user): ShowResource
     {
         Gate::authorize('view', $user);
-        return new ShowResource($user);
+        return $this->service->show($user);
     }
 
     /**
      * Update the specified resource in storage.
+     * @throws \Exception
      */
     public function update(UpdateUserRequest $request, User $user): ShowResource
     {
         Gate::authorize('update', $user);
         $data = $request->validated();
-        if ($data['password']) {
-            $data['password'] = Hash::make($data['password']);
-        }
-        $roles = $data['roles'];
-        unset($data['roles']);
-        $user->update($data);
-        $user->role()->sync($roles);
-
-        return new ShowResource($user);
+        $this->service->update($user, $data);
     }
 
     /**
      * Remove the specified resource from storage.
+     * @throws \Exception
      */
-    public function destroy(User $user): Response
+    public function destroy(User $user): Response|JsonResponse
     {
         Gate::authorize('delete', $user);
-        $user->role()->detach();
-        $user->delete();
-        return response()->noContent();
+        if ($this->service->destroy($user)) {
+            return response()->noContent();
+        } else {
+            return response()->json(['message' => 'Ошибка при удаление пользователя'], 500);
+        }
     }
 }
