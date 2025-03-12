@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Cabinet\StoreCabinetRequest;
 use App\Http\Requests\Cabinet\UpdateCabinetRequest;
+use App\Http\Resources\Cabinet\IndexResource;
 use App\Http\Resources\Cabinet\ShowResource;
 use App\Models\Cabinet;
 use App\Models\Building;
@@ -27,7 +28,8 @@ class CabinetController extends Controller
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', Cabinet::class);
-        return $this->service->index();
+        $cabinets = $this->service->index();
+        return IndexResource::collection($cabinets);
     }
 
     /**
@@ -38,16 +40,18 @@ class CabinetController extends Controller
     {
         Gate::authorize('create', Cabinet::class);
         $data = $request->validated();
-        return $this->service->store($data);
+        $cabinet = $this->service->store($data);
+        return new ShowResource($cabinet);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Cabinet $cabinet): ShowResource
+    public function show(int $id): ShowResource
     {
+        $cabinet = $this->service->show($id);
         Gate::authorize('view', $cabinet);
-        return $this->service->show($cabinet);
+        return new ShowResource($cabinet);
     }
 
     /**
@@ -58,7 +62,8 @@ class CabinetController extends Controller
     {
         Gate::authorize('update', $cabinet);
         $data = $request->validated();
-        return $this->service->update($cabinet, $data);
+        $cabinetUpdated = $this->service->update($cabinet, $data);
+        return new ShowResource($cabinetUpdated);
     }
 
     /**
@@ -77,6 +82,7 @@ class CabinetController extends Controller
     public function getCabinetsByFloor(Building $building, int $floor): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', Cabinet::class);
-        return $this->service->getCabinetsByFloor($building, $floor);
+        $cabinets = $this->service->getCabinetsByFloor($building, $floor);
+        return IndexResource::collection($cabinets);
     }
 }
