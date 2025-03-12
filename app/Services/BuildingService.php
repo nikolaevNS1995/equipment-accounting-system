@@ -2,12 +2,10 @@
 
 namespace App\Services;
 
-use App\Http\Resources\Building\IndexResource;
-use App\Http\Resources\Building\ShowResource;
 use App\Models\Building;
 use App\Repositories\BuildingRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Exception;
 
 class BuildingService
@@ -18,38 +16,35 @@ class BuildingService
     {
         $this->repository = $repository;
     }
-    public function index(): AnonymousResourceCollection
+    public function index(): Collection
     {
-        $buildings = $this->repository->getAll();
-        return IndexResource::collection($buildings);
+        return $this->repository->getAll();
     }
 
     /**
      * @throws Exception
      */
-    public function store(array $data): ShowResource
+    public function store(array $data): Building
     {
         try {
-            $building = $this->repository->create($data);
-            return new ShowResource($building);
+            return $this->repository->create($data);
         } catch (QueryException $e) {
             throw new Exception($e->getMessage());
         }
     }
 
-    public function show(Building $building): ShowResource
+    public function show(int $id): Building
     {
-        return new ShowResource($this->repository->getById($building));
+        return $this->repository->getById($id);
     }
 
     /**
      * @throws Exception
      */
-    public function update(Building $building, array $data): ShowResource
+    public function update(Building $building, array $data): Building
     {
         try {
-            $this->repository->update($building, $data);
-            return new ShowResource($building);
+            return $this->repository->update($building, $data);
         } catch (QueryException $e) {
             throw new Exception($e->getMessage());
         }

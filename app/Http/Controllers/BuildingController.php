@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Building\StoreBuildingRequest;
 use App\Http\Requests\Building\UpdateBuildingRequest;
+use App\Http\Resources\Building\IndexResource;
 use App\Http\Resources\Building\ShowResource;
 use App\Models\Building;
 use App\Services\BuildingService;
@@ -27,7 +28,8 @@ class BuildingController extends Controller
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', Building::class);
-        return $this->service->index();
+        $buildings = $this->service->index();
+        return IndexResource::collection($buildings);
     }
 
     /**
@@ -38,16 +40,18 @@ class BuildingController extends Controller
     {
         Gate::authorize('create', Building::class);
         $data = $request->validated();
-        return $this->service->store($data);
+        $building = $this->service->store($data);
+        return new ShowResource($building);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Building $building): ShowResource
+    public function show(int $id): ShowResource
     {
+        $building = $this->service->show($id);
         Gate::authorize('view', $building);
-        return $this->service->show($building);
+        return new ShowResource($building);
     }
 
     /**
@@ -58,7 +62,8 @@ class BuildingController extends Controller
     {
         Gate::authorize('update', $building);
         $data = $request->validated();
-        return $this->service->update($building, $data);
+        $buildingUpdated = $this->service->update($building, $data);
+        return new ShowResource($buildingUpdated);
     }
 
     /**
