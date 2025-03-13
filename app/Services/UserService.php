@@ -2,12 +2,10 @@
 
 namespace App\Services;
 
-use App\Http\Resources\User\IndexResource;
-use App\Http\Resources\User\ShowResource;
 use App\Models\User;
 use App\Repositories\UserRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -20,41 +18,41 @@ class UserService
     {
         $this->repository = $repository;
     }
-    public function index(): AnonymousResourceCollection
+    public function index(): Collection
     {
-        $users = $this->repository->getAll();
-        return IndexResource::collection($users);
+        return $this->repository->getAll();
     }
 
     /**
      * @throws Exception
      */
-    public function store(array $data): ShowResource
+    public function store(array $data): User
     {
         try {
             $data['password'] = Hash::make($data['password']);
             $roles = $data['roles'];
             unset($data['roles']);
             DB::beginTransaction();
-            $user = $this->repository->create($data);
-            $this->repository->addRole($user, $roles);
+            $user = User::create($data);
+            $user->role()->attach($roles);
+            $user = $this->repository->create($user);
             DB::commit();
-            return new ShowResource($user);
+            return $user;
         } catch (QueryException $e) {
             DB::rollBack();
             throw new Exception($e->getMessage());
         }
     }
 
-    public function show(User $user): ShowResource
+    public function show(int $id): User
     {
-        return new ShowResource($this->repository->getById($user));
+        return $this->repository->getById($id);
     }
 
     /**
      * @throws Exception
      */
-    public function update(User $user, array $data): ShowResource
+    public function update(User $user, array $data): User
     {
         try {
             if ($data['password']) {
@@ -63,10 +61,11 @@ class UserService
             $roles = $data['roles'];
             unset($data['roles']);
             DB::beginTransaction();
-            $this->repository->update($user, $data);
-            $this->repository->editRole($user, $roles);
+            $user->update($data);
+            $user->role()->sync($roles);
+            $user = $this->repository->update($user);
             DB::commit();
-            return new ShowResource($user);
+            return $user;
         } catch (QueryException $e)
         {
             DB::rollBack();
@@ -81,7 +80,6 @@ class UserService
     {
         try {
             DB::beginTransaction();
-            $this->repository->removeRole($user);
             $this->repository->delete($user);
             DB::commit();
             return true;

@@ -4,46 +4,45 @@ namespace App\Repositories;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class UserRepository
 {
     public function getAll(): Collection
     {
-        return User::all();
+        return Cache::rememberForever('users:all', function () {
+            return User::with('role')->get();
+        });
     }
 
-    public function create(array $data): User
+    public function create(User $user): User
     {
-        return User::create($data);
-    }
-
-    public function getById(User $user): User
-    {
+        $user->load('role');
+        Cache::forget('users:all');
+        Cache::put('users:' . $user->id, $user);
         return $user;
     }
 
-    public function update(User $user, array $data): bool
+    public function getById(int $id): User
     {
-        return $user->update($data);
+        return Cache::rememberForever('users:' . $id, function () use ($id) {
+            return User::with('role')->findOrFail($id);
+        });
+    }
+
+    public function update(User $user): User
+    {
+        $user->load('role');
+        Cache::forget('users:all');
+        Cache::put('users:' . $user->id, $user);
+        return $user;
     }
 
     public function delete(User $user): ?bool
     {
-        return $user->delete();
-    }
-
-    public function addRole(User $user, array $roles): void
-    {
-        $user->role()->attach($roles);
-    }
-
-    public function editRole(User $user, array $roles): void
-    {
-        $user->role()->sync($roles);
-    }
-
-    public function removeRole(User $user): void
-    {
         $user->role()->detach();
+        Cache::forget('users:all');
+        Cache::forget('users:' . $user->id);
+        return $user->delete();
     }
 }

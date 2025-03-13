@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Resources\User\IndexResource;
 use App\Http\Resources\User\ShowResource;
 use App\Models\User;
 use App\Services\UserService;
@@ -26,7 +27,8 @@ class UserController extends Controller
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', User::class);
-        return $this->service->index();
+        $users = $this->service->index();
+        return IndexResource::collection($users);
     }
 
     /**
@@ -37,16 +39,18 @@ class UserController extends Controller
     {
         Gate::authorize('create', User::class);
         $data = $request->validated();
-        $this->service->store($data);
+        $user = $this->service->store($data);
+        return new ShowResource($user);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(User $user): ShowResource
+    public function show(int $id): ShowResource
     {
+        $user = $this->service->show($id);
         Gate::authorize('view', $user);
-        return $this->service->show($user);
+        return new ShowResource($user);
     }
 
     /**
@@ -57,7 +61,8 @@ class UserController extends Controller
     {
         Gate::authorize('update', $user);
         $data = $request->validated();
-        $this->service->update($user, $data);
+        $user = $this->service->update($user, $data);
+        return new ShowResource($user);
     }
 
     /**
