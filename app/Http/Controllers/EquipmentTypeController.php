@@ -27,7 +27,8 @@ class EquipmentTypeController extends Controller
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', EquipmentType::class);
-        return $this->service->index();
+        $equipmentTypes = $this->service->index();
+        return IndexResource::collection($equipmentTypes);
     }
 
     /**
@@ -38,16 +39,18 @@ class EquipmentTypeController extends Controller
     {
         Gate::authorize('create', EquipmentType::class);
         $data = $request->validated();
-        return $this->service->store($data);
+        $equipmentType = $this->service->store($data);
+        return new ShowResource($equipmentType);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(EquipmentType $equipmentType): ShowResource
+    public function show(int $id): ShowResource
     {
+        $equipmentType = $this->service->show($id);
         Gate::authorize('view', $equipmentType);
-        return $this->service->show($equipmentType);
+        return new ShowResource($equipmentType);
     }
 
     /**
@@ -58,7 +61,8 @@ class EquipmentTypeController extends Controller
     {
         Gate::authorize('update', $equipmentType);
         $data = $request->validated();
-        return $this->service->update($equipmentType, $data);
+        $equipmentType = $this->service->update($equipmentType, $data);
+        return new ShowResource($equipmentType);
     }
 
     /**
