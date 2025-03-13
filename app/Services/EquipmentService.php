@@ -2,14 +2,11 @@
 
 namespace App\Services;
 
-use App\Http\Resources\Equipment\IndexResource;
-use App\Http\Resources\Equipment\ShowResource;
 use App\Models\Equipment;
-use App\Models\EquipmentBrand;
 use App\Repositories\EquipmentRepository;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class EquipmentService
 {
@@ -19,38 +16,35 @@ class EquipmentService
     {
         $this->repository = $repository;
     }
-    public function index(): AnonymousResourceCollection
+    public function index(): Collection
     {
-        $equipments = $this->repository->getAll();
-        return IndexResource::collection($equipments);
+        return $this->repository->getAll();
     }
 
     /**
      * @throws Exception
      */
-    public function store(array $data): ShowResource
+    public function store(array $data): Equipment
     {
         try {
-            $equipment = $this->repository->create($data);
-            return new ShowResource($equipment);
+            return $this->repository->create($data);
         } catch (QueryException $e) {
             throw new Exception($e->getMessage());
         }
     }
 
-    public function show(Equipment $equipment): ShowResource
+    public function show(int $id): Equipment
     {
-        return new ShowResource($this->repository->getById($equipment));
+        return $this->repository->getById($id);
     }
 
     /**
      * @throws Exception
      */
-    public function update(Equipment $equipment, array $data): ShowResource
+    public function update(Equipment $equipment, array $data): Equipment
     {
         try {
-            $this->repository->update($equipment);
-            return new ShowResource($equipment);
+            return $this->repository->update($equipment);
         } catch (QueryException $e) {
             throw new Exception($e->getMessage());
         }

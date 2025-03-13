@@ -4,31 +4,46 @@ namespace App\Repositories;
 
 use App\Models\Equipment;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class EquipmentRepository
 {
     public function getAll(): Collection
     {
-        return Equipment::all();
+        return Cache::rememberForever('equipments:all', function () {
+            return Equipment::with('equipmentModel', 'cabinet', 'equipmentModel.equipmentBrand.equipmentType')->get();
+        });
     }
 
-    public function getById(Equipment $equipment): Equipment
+    public function getById(int $id): Equipment
     {
-        return $equipment;
+        return Cache::rememberForever('equipments:' . $id, function () use ($id) {
+            return Equipment::with('equipmentModel', 'cabinet', 'equipmentModel.equipmentBrand.equipmentType')->findOrFail($id);
+        });
     }
 
     public function create(array $data): Equipment
     {
-        return Equipment::create($data);
+        $equipment = Equipment::create($data);
+        $equipment->load('equipmentModel', 'cabinet', 'equipmentModel.equipmentBrand.equipmentType');
+        Cache::forget('equipments:all');
+        Cache::put('equipments:' . $equipment->id, $equipment);
+        return $equipment;
     }
 
-    public function update(Equipment $equipment): bool
+    public function update(Equipment $equipment): Equipment
     {
-        return $equipment->update();
+        $equipment->update();
+        $equipment->load('equipmentModel', 'cabinet', 'equipmentModel.equipmentBrand.equipmentType');
+        Cache::forget('equipments:all');
+        Cache::put('equipments:' . $equipment->id, $equipment);
+        return $equipment;
     }
 
     public function delete(Equipment $equipment): bool
     {
+        Cache::forget('equipments:all');
+        Cache::forget('equipments:' . $equipment->id);
         return $equipment->delete();
     }
 }

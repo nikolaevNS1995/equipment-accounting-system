@@ -27,7 +27,8 @@ class EquipmentController extends Controller
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', Equipment::class);
-        return $this->service->index();
+        $equipments = $this->service->index();
+        return IndexResource::collection($equipments);
     }
 
     /**
@@ -38,16 +39,18 @@ class EquipmentController extends Controller
     {
         Gate::authorize('create', Equipment::class);
         $data = $request->validated();
-        return $this->service->store($data);
+        $equipment = $this->service->store($data);
+        return new ShowResource($equipment);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Equipment $equipment): ShowResource
+    public function show(int $id): ShowResource
     {
+        $equipment = $this->service->show($id);
         Gate::authorize('view', $equipment);
-        return $this->service->show($equipment);
+        return new ShowResource($equipment);
     }
 
     /**
@@ -58,7 +61,8 @@ class EquipmentController extends Controller
     {
         Gate::authorize('update', $equipment);
         $data = $request->validated();
-        return $this->service->update($equipment, $data);
+        $equipment = $this->service->update($equipment, $data);
+        return new ShowResource($equipment);
     }
 
     /**
