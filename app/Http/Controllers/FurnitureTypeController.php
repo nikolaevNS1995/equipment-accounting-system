@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FurnitureType\StoreFurnitureTypeRequest;
 use App\Http\Requests\FurnitureType\UpdateFurnitureTypeRequest;
+use App\Http\Resources\FurnitureType\IndexResource;
 use App\Http\Resources\FurnitureType\ShowResource;
 use App\Models\FurnitureType;
 use App\Services\FurnitureTypeService;
@@ -26,7 +27,8 @@ class FurnitureTypeController extends Controller
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', FurnitureType::class);
-        return $this->service->index();
+        $furnitureTypes = $this->service->index();
+        return IndexResource::collection($furnitureTypes);
     }
 
     /**
@@ -37,16 +39,18 @@ class FurnitureTypeController extends Controller
     {
         Gate::authorize('create', FurnitureType::class);
         $data = $request->validated();
-        return $this->service->store($data);
+        $furnitureType = $this->service->store($data);
+        return new ShowResource($furnitureType);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(FurnitureType $furnitureType): ShowResource
+    public function show(int $id): ShowResource
     {
+        $furnitureType = $this->service->show($id);
         Gate::authorize('view', $furnitureType);
-        return $this->service->show($furnitureType);
+        return new ShowResource($furnitureType);
     }
 
     /**
@@ -57,7 +61,8 @@ class FurnitureTypeController extends Controller
     {
         Gate::authorize('update', $furnitureType);
         $data = $request->validated();
-        return $this->service->update($furnitureType, $data);
+        $furnitureType = $this->service->update($furnitureType, $data);
+        return new ShowResource($furnitureType);
     }
 
     /**
