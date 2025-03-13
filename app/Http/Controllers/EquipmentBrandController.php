@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EquipmentBrand\StoreEquipmentBrandRequest;
 use App\Http\Requests\EquipmentBrand\UpdateEquipmentBrandRequest;
+use App\Http\Resources\EquipmentBrand\IndexResource;
 use App\Http\Resources\EquipmentBrand\ShowResource;
 use App\Models\EquipmentBrand;
 use App\Services\EquipmentBrandService;
@@ -26,7 +27,8 @@ class EquipmentBrandController extends Controller
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', EquipmentBrand::class);
-        return $this->service->index();
+        $equipmentBrands = $this->service->index();
+        return IndexResource::collection($equipmentBrands);
     }
 
     /**
@@ -37,16 +39,18 @@ class EquipmentBrandController extends Controller
     {
         Gate::authorize('create', EquipmentBrand::class);
         $data = $request->validated();
-        return $this->service->store($data);
+        $equipmentBrand = $this->service->store($data);
+        return new ShowResource($equipmentBrand);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(EquipmentBrand $equipmentBrand): ShowResource
+    public function show(int $id): ShowResource
     {
+        $equipmentBrand = $this->service->show($id);
         Gate::authorize('view', $equipmentBrand);
-        return $this->service->show($equipmentBrand);
+        return new ShowResource($equipmentBrand);
     }
 
     /**
@@ -57,7 +61,8 @@ class EquipmentBrandController extends Controller
     {
         Gate::authorize('update', $equipmentBrand);
         $data = $request->validated();
-        return $this->service->update($equipmentBrand, $data);
+        $equipmentBrand = $this->service->update($equipmentBrand, $data);
+        return new ShowResource($equipmentBrand);
     }
 
     /**

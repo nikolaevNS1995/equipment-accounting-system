@@ -2,34 +2,48 @@
 
 namespace App\Repositories;
 
-use App\Http\Requests\EquipmentBrand\StoreEquipmentBrandRequest;
 use App\Models\EquipmentBrand;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class EquipmentBrandRepository
 {
     public function getAll(): Collection
     {
-        return EquipmentBrand::all();
+        return Cache::rememberForever('equipmentBrands:all', function () {
+            return EquipmentBrand::with('equipmentType')->get();
+        });
     }
 
     public function create(array $data): EquipmentBrand
     {
-        return EquipmentBrand::create($data);
-    }
-
-    public function getById(EquipmentBrand $equipmentBrand)
-    {
+        $equipmentBrand = EquipmentBrand::create($data);
+        $equipmentBrand->load('equipmentType');
+        Cache::forget('equipmentBrands:all');
+        Cache::put('equipmentBrands:' . $equipmentBrand->id, $equipmentBrand);
         return $equipmentBrand;
     }
 
-    public function update(EquipmentBrand $equipmentBrand, array $data): bool
+    public function getById(int $id): EquipmentBrand
     {
-        return $equipmentBrand->update($data);
+        return Cache::rememberForever('equipmentBrands:' . $id, function () use ($id) {
+            return EquipmentBrand::with('equipmentType')->findOrFail($id);
+        });
+    }
+
+    public function update(EquipmentBrand $equipmentBrand, array $data): EquipmentBrand
+    {
+        $equipmentBrand->update($data);
+        $equipmentBrand->load('equipmentType');
+        Cache::forget('equipmentBrands:all');
+        Cache::put('equipmentBrands:' . $equipmentBrand->id, $equipmentBrand);
+        return $equipmentBrand;
     }
 
     public function delete(EquipmentBrand $equipmentBrand): bool
     {
+        Cache::forget('equipmentBrands:all');
+        Cache::forget('equipmentBrands:' . $equipmentBrand->id);
         return $equipmentBrand->delete();
     }
 }

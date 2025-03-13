@@ -2,13 +2,11 @@
 
 namespace App\Services;
 
-use App\Http\Resources\EquipmentBrand\IndexResource;
-use App\Http\Resources\EquipmentBrand\ShowResource;
 use App\Models\EquipmentBrand;
 use App\Repositories\EquipmentBrandRepository;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class EquipmentBrandService
 {
@@ -18,38 +16,35 @@ class EquipmentBrandService
     {
         $this->repository = $repository;
     }
-    public function index(): AnonymousResourceCollection
+    public function index(): Collection
     {
-        $equipmentBrands = $this->repository->getAll();
-        return IndexResource::collection($equipmentBrands);
+        return $this->repository->getAll();
     }
 
     /**
      * @throws Exception
      */
-    public function store(array $data): ShowResource
+    public function store(array $data): EquipmentBrand
     {
         try {
-            $equipmentBrand = $this->repository->create($data);
-            return new ShowResource($equipmentBrand);
+            return $this->repository->create($data);
         } catch (QueryException $e) {
             throw new Exception($e->getMessage());
         }
     }
 
-    public function show(EquipmentBrand $equipmentBrand): ShowResource
+    public function show(int $id): EquipmentBrand
     {
-        return new ShowResource($this->repository->getById($equipmentBrand));
+        return $this->repository->getById($id);
     }
 
     /**
      * @throws Exception
      */
-    public function update(EquipmentBrand $equipmentBrand, array $data): ShowResource
+    public function update(EquipmentBrand $equipmentBrand, array $data): EquipmentBrand
     {
         try {
-            $this->repository->update($equipmentBrand, $data);
-            return new ShowResource($equipmentBrand);
+            return $this->repository->update($equipmentBrand, $data);
         } catch (QueryException $e) {
             throw new Exception($e->getMessage());
         }
