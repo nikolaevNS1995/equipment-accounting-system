@@ -27,7 +27,8 @@ class RoleController extends Controller
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', Role::class);
-        return $this->service->index();
+        $roles = $this->service->index();
+        return IndexResource::collection($roles);
     }
 
     /**
@@ -38,16 +39,18 @@ class RoleController extends Controller
     {
         Gate::authorize('create', Role::class);
         $data = $request->validated();
-        return $this->service->store($data);
+        $role = $this->service->store($data);
+        return new ShowResource($role);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Role $role): ShowResource
+    public function show(int $id): ShowResource
     {
+        $role = $this->service->show($id);
         Gate::authorize('view', $role);
-        return $this->service->show($role);
+        return new ShowResource($role);
     }
 
     /**
@@ -58,7 +61,8 @@ class RoleController extends Controller
     {
         Gate::authorize('update', $role);
         $data = $request->validated();
-        return $this->service->update($role, $data);
+        $role = $this->service->update($role, $data);
+        return new ShowResource($role);
     }
 
     /**

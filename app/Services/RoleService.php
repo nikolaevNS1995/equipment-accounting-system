@@ -2,12 +2,10 @@
 
 namespace App\Services;
 
-use App\Http\Resources\Role\IndexResource;
-use App\Http\Resources\Role\ShowResource;
 use App\Models\Role;
 use App\Repositories\RoleRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Exception;
 
 class RoleService
@@ -18,38 +16,35 @@ class RoleService
     {
         $this->repository = $repository;
     }
-    public function index(): AnonymousResourceCollection
+    public function index(): Collection
     {
-        $roles = $this->repository->getAll();
-        return IndexResource::collection($roles);
+        return $this->repository->getAll();
     }
 
     /**
      * @throws Exception
      */
-    public function store(array $data): ShowResource
+    public function store(array $data): Role
     {
         try {
-            $role = $this->repository->create($data);
-            return new ShowResource($role);
+            return $this->repository->create($data);
         } catch (QueryException $e) {
             throw new Exception($e->getMessage());
         }
     }
 
-    public function show(Role $role): ShowResource
+    public function show(int $id): Role
     {
-        return new ShowResource($this->repository->getById($role));
+        return $this->repository->getById($id);
     }
 
     /**
      * @throws Exception
      */
-    public function update(Role $role, array $data): ShowResource
+    public function update(Role $role, array $data): Role
     {
         try {
-            $this->repository->update($role, $data);
-            return new ShowResource($role);
+            return $this->repository->update($role, $data);
         } catch (QueryException $e)
         {
             throw new Exception($e->getMessage());
