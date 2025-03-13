@@ -4,61 +4,46 @@ namespace App\Repositories;
 
 use App\Models\Order;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class OrderRepository
 {
     public function getAll(): Collection
     {
-        return Order::all();
+        return Cache::rememberForever('orders:all', function () {
+            return Order::with('user')->get();
+        });
     }
 
-    public function create(array $data): Order
+    public function create(Order $order): Order
     {
-        return Order::create($data);
-    }
-
-    public function getById(Order $order): Order
-    {
+        $order->load('user', 'equipments.equipmentModel', 'equipments.cabinet', 'furnitures.furnitureType', 'furnitures.cabinet');
+        Cache::forget('orders:all');
+        Cache::put('orders:' . $order->id, $order);
         return $order;
     }
 
-    public function update(Order $order, array $data): bool
+    public function getById(int $id): Order
     {
-        return $order->update($data);
+        return Cache::rememberForever('orders:' . $id, function () use ($id) {
+            return Order::with('user', 'equipments.equipmentModel', 'equipments.cabinet', 'furnitures.furnitureType', 'furnitures.cabinet')->findOrFail($id);
+        });
+    }
+
+    public function update(Order $order): Order
+    {
+        $order->load('user', 'equipments.equipmentModel', 'equipments.cabinet', 'furnitures.furnitureType', 'furnitures.cabinet');
+        Cache::forget('orders:all');
+        Cache::put('orders:' . $order->id, $order);
+        return $order;
     }
 
     public function delete(Order $order): ?bool
     {
-        return $order->delete();
-    }
-
-    public function createItemEquipment(Order $order, array $item): void
-    {
-        $order->equipments()->attach($item);
-    }
-
-    public function createItemFurniture(Order $order, array $item): void
-    {
-        $order->furnitures()->attach($item);
-    }
-
-    public function updateItemEquipment(Order $order, array $item): void
-    {
-        $order->equipments()->sync($item);
-    }
-
-    public function updateItemFurniture(Order $order, array $item): void
-    {
-        $order->furnitures()->sync($item);
-    }
-
-    public function deleteItemEquipment(Order $order): void
-    {
         $order->equipments()->detach();
-    }
-
-    public function deleteItemFurniture(Order $order): void
-    {
         $order->furnitures()->detach();
+        Cache::forget('orders:all');
+        Cache::forget('orders' . $order->id);
+        return $order->delete();
     }
 }

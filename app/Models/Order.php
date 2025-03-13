@@ -19,12 +19,12 @@ class Order extends Model
     // Полиморфные связи многие-ко-многим с оборудованием, мебелью и др.
     public function equipments(): MorphToMany
     {
-        return $this->morphedByMany(Equipment::class, 'orderable', 'order_items')->withPivot('quantity')->withTimestamps();
+        return $this->morphedByMany(Equipment::class, 'orderable', 'order_items')->withTimestamps();
     }
 
     public function furnitures(): MorphToMany
     {
-        return $this->morphedByMany(Furniture::class, 'orderable', 'order_items')->withPivot('quantity')->withTimestamps();
+        return $this->morphedByMany(Furniture::class, 'orderable', 'order_items')->withTimestamps();
     }
 
     public function user(): BelongsTo

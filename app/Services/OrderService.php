@@ -7,6 +7,7 @@ use App\Http\Resources\Order\ShowResource;
 use App\Models\Order;
 use App\Repositories\OrderRepository;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
@@ -20,63 +21,64 @@ class OrderService
         $this->repository = $repository;
     }
 
-    public function index(): AnonymousResourceCollection
+    public function index(): Collection
     {
-        $orders = $this->repository->getAll();
-        return IndexResource::collection($orders);
+        return $this->repository->getAll();
     }
 
     /**
      * @throws Exception
      */
-    public function store(array $data): ShowResource
+    public function store(array $data): Order
     {
         try {
             $items = $data['items'];
             unset($data['items']);
             DB::beginTransaction();
-            $order = $this->repository->create($data);
+            $order = Order::create($data);
             foreach ($items as $item) {
                 if ($item['orderable_type'] === 'App\Models\Equipment') {
-                    $this->repository->createItemEquipment($order, $item);
+                    $order->equipments()->attach($item);
                 }
                 if ($item['orderable_type'] === 'App\Models\Furniture') {
-                    $this->repository->createItemFurniture($order, $item);
+                    $order->furnitures()->attach($item);
                 }
             }
+            $order = $this->repository->create($order);
             DB::commit();
-            return new ShowResource($order);
+            return $order;
         } catch (QueryException $e) {
             DB::rollBack();
             throw new Exception($e->getMessage());
         }
     }
 
-    public function show(Order $order): ShowResource
+    public function show(int $id): Order
     {
-        return new ShowResource($this->repository->getById($order));
+        return $this->repository->getById($id);
     }
 
     /**
      * @throws Exception
      */
-    public function update(Order $order, array $data): ShowResource
+    public function update(Order $order, array $data): Order
     {
         try {
             $items = $data['items'];
             unset($data['items']);
             DB::beginTransaction();
-            $this->repository->update($order, $data);
+            $order->update($data);
             foreach ($items as $item) {
                 if ($item['orderable_type'] === 'App\Models\Equipment') {
-                    $this->repository->updateItemEquipment($order, $item);
+                    $order->equipments()->sync($item);
                 }
                 if ($item['orderable_type'] === 'App\Models\Furniture') {
-                    $this->repository->updateItemFurniture($order, $item);
+                    $order->furnitures()->sync($item);
                 }
             }
+            $order = $this->repository->update($order);
             DB::commit();
-            return new ShowResource($order);
+            return $order;
         } catch (QueryException $e) {
             DB::rollBack();
             throw new Exception($e->getMessage());
@@ -90,8 +92,6 @@ class OrderService
     {
         try {
             DB::beginTransaction();
-            $this->repository->deleteItemEquipment($order);
-            $this->repository->deleteItemFurniture($order);
             $this->repository->delete($order);
             DB::commit();
             return true;
