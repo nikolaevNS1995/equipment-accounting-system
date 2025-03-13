@@ -2,13 +2,11 @@
 
 namespace App\Services;
 
-use App\Http\Resources\EquipmentModel\IndexResource;
-use App\Http\Resources\EquipmentModel\ShowResource;
 use App\Models\EquipmentModel;
 use App\Repositories\EquipmentModelRepository;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class EquipmentModelService
 {
@@ -18,39 +16,36 @@ class EquipmentModelService
     {
         $this->repository = $repository;
     }
-    public function index(): AnonymousResourceCollection
+    public function index(): Collection
     {
-        $equipmentModels = $this->repository->getAll();
-        return IndexResource::collection($equipmentModels);
+        return $this->repository->getAll();
     }
 
     /**
      * @throws Exception
      */
-    public function store(array $data): ShowResource
+    public function store(array $data): EquipmentModel
     {
         try {
-            $equipmentModel = $this->repository->create($data);
-            return new ShowResource($equipmentModel);
+            return $this->repository->create($data);
         } catch (QueryException $e) {
             throw new Exception($e->getMessage());
         }
 
     }
 
-    public function show(EquipmentModel $equipmentModel): ShowResource
+    public function show(int $id): EquipmentModel
     {
-        return new ShowResource($this->repository->getById($equipmentModel));
+        return $this->repository->getById($id);
     }
 
     /**
      * @throws Exception
      */
-    public function update(EquipmentModel $equipmentModel, array $data): ShowResource
+    public function update(EquipmentModel $equipmentModel, array $data): EquipmentModel
     {
         try {
-            $this->repository->update($equipmentModel, $data);
-            return new ShowResource($equipmentModel);
+            return $this->repository->update($equipmentModel, $data);
         } catch (QueryException $e) {
             throw new Exception($e->getMessage());
         }
