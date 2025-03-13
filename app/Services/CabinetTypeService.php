@@ -2,14 +2,11 @@
 
 namespace App\Services;
 
-use App\Http\Requests\Building\StoreBuildingRequest;
-use App\Http\Resources\CabinetType\IndexResource;
-use App\Http\Resources\CabinetType\ShowResource;
 use App\Models\CabinetType;
 use App\Repositories\CabinetTypeRepository;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CabinetTypeService
 {
@@ -19,38 +16,35 @@ class CabinetTypeService
     {
         $this->repository = $repository;
     }
-    public function index(): AnonymousResourceCollection
+    public function index(): Collection
     {
-        $cabinetTypes = $this->repository->getAll();
-        return IndexResource::collection($cabinetTypes);
+        return $this->repository->getAll();
     }
 
     /**
      * @throws Exception
      */
-    public function store(array $data): ShowResource
+    public function store(array $data): CabinetType
     {
         try {
-            $cabinetType = $this->repository->create($data);
-            return new ShowResource($cabinetType);
+            return $this->repository->create($data);
         } catch (QueryException $e) {
             throw new Exception($e->getMessage());
         }
     }
 
-    public function show(CabinetType $cabinetType): ShowResource
+    public function show(int $id): CabinetType
     {
-        return new ShowResource($this->repository->getById($cabinetType));
+        return $this->repository->getById($id);
     }
 
     /**
      * @throws Exception
      */
-    public function update(CabinetType $cabinetType, array $data): ShowResource
+    public function update(CabinetType $cabinetType, array $data): CabinetType
     {
         try {
-            $this->repository->update($cabinetType, $data);
-            return new ShowResource($cabinetType);
+            return $this->repository->update($cabinetType, $data);
         } catch (QueryException $e) {
             throw new Exception($e->getMessage());
         }

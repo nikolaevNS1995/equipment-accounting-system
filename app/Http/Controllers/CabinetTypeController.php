@@ -27,7 +27,8 @@ class CabinetTypeController extends Controller
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', CabinetType::class);
-        return $this->service->index();
+        $cabinetTypes = $this->service->index();
+        return IndexResource::collection($cabinetTypes);
     }
 
     /**
@@ -38,16 +39,18 @@ class CabinetTypeController extends Controller
     {
         Gate::authorize('create', CabinetType::class);
         $data = $request->validated();
-        return $this->service->store($data);
+        $cabinetType = $this->service->store($data);
+        return new ShowResource($cabinetType);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(CabinetType $cabinetType): ShowResource
+    public function show(int $id): ShowResource
     {
+        $cabinetType = $this->service->show($id);
         Gate::authorize('view', $cabinetType);
-        return $this->service->show($cabinetType);
+        return new ShowResource($cabinetType);
     }
 
     /**
@@ -58,7 +61,8 @@ class CabinetTypeController extends Controller
     {
         Gate::authorize('update', $cabinetType);
         $data = $request->validated();
-        return $this->service->update($cabinetType, $data);
+        $cabinetTypeUpdated = $this->service->update($cabinetType, $data);
+        return new ShowResource($cabinetTypeUpdated);
     }
 
     /**
