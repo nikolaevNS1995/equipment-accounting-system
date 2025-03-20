@@ -18,7 +18,7 @@ class CabinetFactory extends Factory
      */
     public function definition(): array
     {
-        static $cabinetNumbers = [101, 102, 103, 201, 202, 203, 301, 302, 310, 404];
+        static $cabinetNumbers = [101, 102, 103, 104, 105, 106, 107, 108, 109, 201, 202, 203, 301, 302, 310, 404];
 
         return [
             'building_id' => Building::inRandomOrder()->first()->id,

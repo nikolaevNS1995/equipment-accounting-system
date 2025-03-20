@@ -13,6 +13,12 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * @OA\Tag(
+ *     name="Furniture",
+ *     description="Управление мебелью"
+ * )
+ */
 class FurnitureController extends Controller
 {
     protected FurnitureService $service;
@@ -24,6 +30,22 @@ class FurnitureController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * @OA\Get(
+     *           path="/api/furnitures",
+     *           summary="Получить список всей мебели",
+     *           tags={"Furniture"},
+     *           security={{ "bearerAuth": {} }},
+     *           @OA\Response(
+     *               response=200,
+     *               description="Список мебели",
+     *               @OA\JsonContent(
+     *                   allOf={
+     *                       @OA\Schema(ref="#/components/schemas/FurnitureIndexResource")
+     *                   }
+     *               )
+     *           )
+     *   )
      */
     public function index(): AnonymousResourceCollection
     {
@@ -34,6 +56,22 @@ class FurnitureController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @OA\Post(
+     *           path="/api/furnitures",
+     *           summary="Создать новую мебель",
+     *           tags={"Furniture"},
+     *           security={{ "bearerAuth": {} }},
+     *           @OA\RequestBody(
+     *               required=true,
+     *               @OA\JsonContent(ref="#/components/schemas/StoreFurnitureRequest")
+     *           ),
+     *           @OA\Response(
+     *               response=201,
+     *               description="Мебель создана",
+     *               @OA\JsonContent(ref="#/components/schemas/FurnitureShowResource")
+     *           )
+     *    )
      * @throws \Exception
      */
     public function store(StoreFurnitureRequest $request): ShowResource
@@ -46,6 +84,29 @@ class FurnitureController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @OA\Get(
+     *            path="/api/furnitures/{id}",
+     *            summary="Получить мебель",
+     *            tags={"Furniture"},
+     *            security={{ "bearerAuth": {} }},
+     *            @OA\Parameter(
+     *                name="id",
+     *                in="path",
+     *                required=true,
+     *                example=1,
+     *                description="ID мебели"
+     *            ),
+     *            @OA\Response(
+     *                response=200,
+     *                description="Мебель",
+     *                @OA\JsonContent(
+     *                    allOf={
+     *                        @OA\Schema(ref="#/components/schemas/FurnitureShowResource")
+     *                    }
+     *                )
+     *            )
+     *    )
      */
     public function show(int $id): ShowResource
     {
@@ -56,6 +117,29 @@ class FurnitureController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @OA\Patch(
+     *            path="/api/furnitures/{furniture}",
+     *            summary="Обновить мебель",
+     *            tags={"Furniture"},
+     *            security={{ "bearerAuth": {} }},
+     *            @OA\Parameter(
+     *                 name="furniture",
+     *                 in="path",
+     *                 required=true,
+     *                 example=1,
+     *                 description="ID мебели"
+     *            ),
+     *            @OA\RequestBody(
+     *                required=true,
+     *                @OA\JsonContent(ref="#/components/schemas/UpdateFurnitureRequest")
+     *            ),
+     *            @OA\Response(
+     *                response=200,
+     *                description="Мебель изменена",
+     *                @OA\JsonContent(ref="#/components/schemas/FurnitureShowResource")
+     *            )
+     *     )
      * @throws \Exception
      */
     public function update(UpdateFurnitureRequest $request, Furniture $furniture): ShowResource
@@ -68,6 +152,24 @@ class FurnitureController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @OA\Delete(
+     *             path="/api/furnitures/{furniture}",
+     *             summary="Удалить мебель",
+     *             tags={"Furniture"},
+     *             security={{ "bearerAuth": {} }},
+     *             @OA\Parameter(
+     *                  name="furniture",
+     *                  in="path",
+     *                  required=true,
+     *                  example=1,
+     *                  description="ID мебели"
+     *             ),
+     *             @OA\Response(
+     *                 response=204,
+     *                 description="Мебель удалена",
+     *             )
+     *     )
      * @throws \Exception
      */
     public function destroy(Furniture $furniture): Response|JsonResponse

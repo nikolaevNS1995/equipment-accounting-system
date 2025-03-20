@@ -5,6 +5,21 @@ namespace App\Http\Resources\Equipment;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @OA\Schema(
+ *     schema="EquipmentIndexResource",
+ *     title="Ресурс списка оборудования",
+ *     description="Формат данных оборудования при получении списка",
+ *     @OA\Property(property="data", type="array",
+ *         @OA\Items(
+ *             @OA\Property(property="id", type="integer", example=1),
+ *             @OA\Property(property="equipment_model", type="string", example="EXP-123"),
+ *             @OA\Property(property="cabinet_id", type="integer", example=1),
+ *             @OA\Property(property="inventory_number", type="integer", example=555555555),
+ *         )
+ *     )
+ * )
+ */
 class IndexResource extends JsonResource
 {
     /**

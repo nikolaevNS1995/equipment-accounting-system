@@ -13,6 +13,12 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * @OA\Tag(
+ *     name="Users",
+ *     description="Управление пользователями"
+ * )
+ */
 class UserController extends Controller
 {
     protected UserService $service;
@@ -23,6 +29,22 @@ class UserController extends Controller
     }
     /**
      * Display a listing of the resource.
+     *
+     * @OA\Get(
+     *              path="/api/users",
+     *              summary="Получить список всех пользователей",
+     *              tags={"Users"},
+     *              security={{ "bearerAuth": {} }},
+     *              @OA\Response(
+     *                  response=200,
+     *                  description="Список пользователей",
+     *                  @OA\JsonContent(
+     *                      allOf={
+     *                          @OA\Schema(ref="#/components/schemas/UserIndexResource")
+     *                      }
+     *                  )
+     *              )
+     *      )
      */
     public function index(): AnonymousResourceCollection
     {
@@ -33,6 +55,22 @@ class UserController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @OA\Post(
+     *              path="/api/users",
+     *              summary="Создать нового пользователя",
+     *              tags={"Users"},
+     *              security={{ "bearerAuth": {} }},
+     *              @OA\RequestBody(
+     *                  required=true,
+     *                  @OA\JsonContent(ref="#/components/schemas/StoreUserRequest")
+     *              ),
+     *              @OA\Response(
+     *                  response=201,
+     *                  description="Пользователь создан",
+     *                  @OA\JsonContent(ref="#/components/schemas/UserShowResource")
+     *              )
+     *       )
      * @throws \Exception
      */
     public function store(StoreUserRequest $request): ShowResource
@@ -45,6 +83,29 @@ class UserController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @OA\Get(
+     *               path="/api/users/{id}",
+     *               summary="Получить пользователя",
+     *               tags={"Users"},
+     *               security={{ "bearerAuth": {} }},
+     *               @OA\Parameter(
+     *                   name="id",
+     *                   in="path",
+     *                   required=true,
+     *                   example=1,
+     *                   description="ID пользователя"
+     *               ),
+     *               @OA\Response(
+     *                   response=200,
+     *                   description="Пользователь",
+     *                   @OA\JsonContent(
+     *                       allOf={
+     *                           @OA\Schema(ref="#/components/schemas/UserShowResource")
+     *                       }
+     *                   )
+     *               )
+     *       )
      */
     public function show(int $id): ShowResource
     {
@@ -55,6 +116,29 @@ class UserController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @OA\Patch(
+     *               path="/api/users/{user}",
+     *               summary="Обновить пользователя",
+     *               tags={"Users"},
+     *               security={{ "bearerAuth": {} }},
+     *               @OA\Parameter(
+     *                    name="user",
+     *                    in="path",
+     *                    required=true,
+     *                    example=1,
+     *                    description="ID пользователя"
+     *               ),
+     *               @OA\RequestBody(
+     *                   required=true,
+     *                   @OA\JsonContent(ref="#/components/schemas/UpdateUserRequest")
+     *               ),
+     *               @OA\Response(
+     *                   response=200,
+     *                   description="Пользователь изменен",
+     *                   @OA\JsonContent(ref="#/components/schemas/UserShowResource")
+     *               )
+     *        )
      * @throws \Exception
      */
     public function update(UpdateUserRequest $request, User $user): ShowResource
@@ -67,6 +151,24 @@ class UserController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @OA\Delete(
+     *                path="/api/users/{user}",
+     *                summary="Удалить пользователя",
+     *                tags={"Users"},
+     *                security={{ "bearerAuth": {} }},
+     *                @OA\Parameter(
+     *                     name="user",
+     *                     in="path",
+     *                     required=true,
+     *                     example=1,
+     *                     description="ID пользователя"
+     *                ),
+     *                @OA\Response(
+     *                    response=204,
+     *                    description="Пользователь удален",
+     *                )
+     *        )
      * @throws \Exception
      */
     public function destroy(User $user): Response|JsonResponse

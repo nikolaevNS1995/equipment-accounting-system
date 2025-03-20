@@ -13,6 +13,12 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * @OA\Tag(
+ *     name="EquipmentBrands",
+ *     description="Управление брендами оборудования"
+ * )
+ */
 class EquipmentBrandController extends Controller
 {
     protected EquipmentBrandService $service;
@@ -21,8 +27,25 @@ class EquipmentBrandController extends Controller
     {
         $this->service = $service;
     }
+
     /**
      * Display a listing of the resource.
+     *
+     * @OA\Get(
+     *       path="/api/equipment-brands",
+     *       summary="Получить список всех брендов оборудования",
+     *       tags={"EquipmentBrands"},
+     *       security={{ "bearerAuth": {} }},
+     *       @OA\Response(
+     *           response=200,
+     *           description="Список брендов оборудования",
+     *           @OA\JsonContent(
+     *               allOf={
+     *                   @OA\Schema(ref="#/components/schemas/EquipmentBrandIndexResource")
+     *               }
+     *           )
+     *       )
+     *   )
      */
     public function index(): AnonymousResourceCollection
     {
@@ -33,6 +56,22 @@ class EquipmentBrandController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @OA\Post(
+     *       path="/api/equipment-brands",
+     *       summary="Создать новый бренд оборудования",
+     *       tags={"EquipmentBrands"},
+     *       security={{ "bearerAuth": {} }},
+     *       @OA\RequestBody(
+     *           required=true,
+     *           @OA\JsonContent(ref="#/components/schemas/StoreEquipmentBrandRequest")
+     *       ),
+     *       @OA\Response(
+     *           response=201,
+     *           description="Бренд оборудования создан",
+     *           @OA\JsonContent(ref="#/components/schemas/EquipmentBrandShowResource")
+     *       )
+     *   )
      * @throws \Exception
      */
     public function store(StoreEquipmentBrandRequest $request): ShowResource
@@ -45,6 +84,29 @@ class EquipmentBrandController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @OA\Get(
+     *        path="/api/equipment-brands/{id}",
+     *        summary="Получить бренд оборудования",
+     *        tags={"EquipmentBrands"},
+     *        security={{ "bearerAuth": {} }},
+     *        @OA\Parameter(
+     *            name="id",
+     *            in="path",
+     *            required=true,
+     *            example=1,
+     *            description="ID бренда оборудования"
+     *        ),
+     *        @OA\Response(
+     *            response=200,
+     *            description="Бренд оборудования",
+     *            @OA\JsonContent(
+     *                allOf={
+     *                    @OA\Schema(ref="#/components/schemas/EquipmentBrandShowResource")
+     *                }
+     *            )
+     *        )
+     *    )
      */
     public function show(int $id): ShowResource
     {
@@ -55,6 +117,29 @@ class EquipmentBrandController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @OA\Patch(
+     *        path="/api/equipment-brands/{equipment_brand}",
+     *        summary="Обновить бренд оборудования",
+     *        tags={"EquipmentBrands"},
+     *        security={{ "bearerAuth": {} }},
+     *        @OA\Parameter(
+     *             name="equipment_brand",
+     *             in="path",
+     *             required=true,
+     *             example=1,
+     *             description="ID бренда оборудования"
+     *        ),
+     *        @OA\RequestBody(
+     *            required=true,
+     *            @OA\JsonContent(ref="#/components/schemas/UpdateEquipmentBrandRequest")
+     *        ),
+     *        @OA\Response(
+     *            response=200,
+     *            description="Бренд оборудования изменен",
+     *            @OA\JsonContent(ref="#/components/schemas/EquipmentBrandShowResource")
+     *        )
+     *    )
      * @throws \Exception
      */
     public function update(UpdateEquipmentBrandRequest $request, EquipmentBrand $equipmentBrand): ShowResource
@@ -67,6 +152,24 @@ class EquipmentBrandController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @OA\Delete(
+     *         path="/api/equipment-brands/{equipment_brand}",
+     *         summary="Удалить бренд оборудования",
+     *         tags={"EquipmentBrands"},
+     *         security={{ "bearerAuth": {} }},
+     *         @OA\Parameter(
+     *              name="equipment_brand",
+     *              in="path",
+     *              required=true,
+     *              example=1,
+     *              description="ID бренда оборудования"
+     *         ),
+     *         @OA\Response(
+     *             response=204,
+     *             description="Бренд оборудования удален",
+     *         )
+     *     )
      * @throws \Exception
      */
     public function destroy(EquipmentBrand $equipmentBrand): Response|JsonResponse

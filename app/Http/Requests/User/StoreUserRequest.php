@@ -1,6 +1,23 @@
 <?php
 
 namespace App\Http\Requests\User;
+/**
+ * @OA\Schema(
+ *     schema="StoreUserRequest",
+ *     title="Запрос на создание пользователя",
+ *     description="Данные для создания нового пользователя",
+ *     required={"name", "email", "password", "password_confirmation", "roles"},
+ *     @OA\Property(property="name", type="string", example="Иванов Иван"),
+ *     @OA\Property(property="email", type="string", example="ivanov@mail.com"),
+ *     @OA\Property(property="password", type="string"),
+ *     @OA\Property(property="password_confirmation", type="string"),
+ *     @OA\Property(property="roles", type="array",
+ *         @OA\Items(
+ *              @OA\Property(property="id", type="integer", example=1),
+ *         )
+ *     ),
+ * )
+ */
 
 use Illuminate\Foundation\Http\FormRequest;
 

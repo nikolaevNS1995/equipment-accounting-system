@@ -4,6 +4,23 @@ namespace App\Http\Requests\Order;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @OA\Schema(
+ *     schema="UpdateOrderRequest",
+ *     title="Запрос на обновление заявки",
+ *     description="Данные для обновления заявки",
+ *     required={"user_id", "order_type", "status", "items"},
+ *     @OA\Property(property="user_id", type="integer", example="HP"),
+ *     @OA\Property(property="order_type", type="string", example="HP"),
+ *     @OA\Property(property="status", type="string", example="HP"),
+ *     @OA\Property(property="items", type="array",
+ *         @OA\Items(
+ *              @OA\Property(property="orderable_id", type="integer", example=1),
+ *              @OA\Property(property="orderable_type", type="string", example="App\Models\Equipment"),
+ *          )
+ *      ),
+ * )
+ */
 class UpdateOrderRequest extends FormRequest
 {
     /**

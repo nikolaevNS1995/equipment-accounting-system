@@ -4,6 +4,17 @@ namespace App\Http\Requests\Furniture;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @OA\Schema(
+ *     schema="UpdateFurnitureRequest",
+ *     title="Запрос на обновление мебели",
+ *     description="Данные для обновления мебели",
+ *     required={"furniture_type_id", "cabinet_id", "inventory_number"},
+ *     @OA\Property(property="furniture_type_id", type="integer", example=1),
+ *     @OA\Property(property="cabinet_id", type="integer", example=1),
+ *     @OA\Property(property="inventory_number", type="integer", example=5555555),
+ * )
+ */
 class UpdateFurnitureRequest extends FormRequest
 {
     /**

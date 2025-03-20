@@ -4,6 +4,15 @@ namespace App\Http\Requests\EquipmentType;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @OA\Schema(
+ *     schema="StoreEquipmentTypeRequest",
+ *     title="Запрос на создание типа оборудования",
+ *     description="Данные для создания нового типа оборудования",
+ *     required={"title"},
+ *     @OA\Property(property="title", type="string", example="HP"),
+ * )
+ */
 class StoreEquipmentTypeRequest extends FormRequest
 {
     /**

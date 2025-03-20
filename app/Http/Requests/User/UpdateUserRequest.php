@@ -4,6 +4,23 @@ namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @OA\Schema(
+ *     schema="UpdateUserRequest",
+ *     title="Запрос на обновление пользователя",
+ *     description="Данные для обновления пользователя",
+ *     required={"name", "email", "roles"},
+ *     @OA\Property(property="name", type="string", example="Иванов Иван"),
+ *     @OA\Property(property="email", type="string", example="ivanov@mail.com"),
+ *     @OA\Property(property="password", type="string"),
+ *     @OA\Property(property="password_confirmation", type="string"),
+ *     @OA\Property(property="roles", type="array",
+ *          @OA\Items(
+ *              @OA\Property(property="id", type="integer", example=1),
+ *          )
+ *      ),
+ * )
+ */
 class UpdateUserRequest extends FormRequest
 {
     /**
@@ -24,8 +41,8 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-            'password_confirmation' => 'required|string|min:6',
+            'password' => 'nullable|string|min:6|confirmed',
+            'password_confirmation' => 'nullable|string|min:6',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,id',
         ];

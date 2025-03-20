@@ -4,9 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Cabinet;
 use App\Models\Building;
-use Exception;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Cache;
 
 class CabinetRepository

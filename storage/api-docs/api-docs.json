@@ -1,0 +1,3718 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Система управления учета оборудования и мебели",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/": {},
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Получение токена",
+                "description": "Get a JWT via given credentials.",
+                "operationId": "8dcb70df1020986038d098cc08d05dae",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "ivanovi@mail.ry"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "Qwerty12345"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Пользователь авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "bearer"
+                                        },
+                                        "expires_in": {
+                                            "type": "integer",
+                                            "example": 3600
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/me": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Получение пользователя",
+                "description": "Get the authenticated User.",
+                "operationId": "f0b15943f55143d36f606a2dbd1d2366",
+                "responses": {
+                    "200": {
+                        "description": "Пользователь получен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Иванов Иван"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "ivanovi@mail.com"
+                                        },
+                                        "email_verified_at": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2025-03-05T17:29:05.000000Z"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2025-03-05T17:29:05.000000Z"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "2025-03-05T17:29:05.000000Z"
+                                        },
+                                        "deleted_at": {
+                                            "type": "string",
+                                            "format": "date",
+                                            "example": "null"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/refresh": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Обновление токена",
+                "description": "Refresh a token.",
+                "operationId": "b2eae7a8032954d25b46c7ec6f489c68",
+                "responses": {
+                    "200": {
+                        "description": "Токен обновлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "bearer"
+                                        },
+                                        "expires_in": {
+                                            "type": "integer",
+                                            "example": 3600
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/buildings": {
+            "get": {
+                "tags": [
+                    "Buildings"
+                ],
+                "summary": "Получить список всех площадок",
+                "description": "Display a listing of the resource.",
+                "operationId": "704d1f7897ed7a3b8d29dacea66823ad",
+                "responses": {
+                    "200": {
+                        "description": "Список площадок",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/BuildingIndexResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Buildings"
+                ],
+                "summary": "Создать новую площадку",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "c8f8399919e01b1e4e2e2f6a9f1f5107",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreBuildingRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Площадка создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BuildingShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/buildings/{id}": {
+            "get": {
+                "tags": [
+                    "Buildings"
+                ],
+                "summary": "Получить площадку",
+                "description": "Display the specified resource.",
+                "operationId": "7c2e9a5ec44b127b681717d1d5b91152",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID площадки",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Площадка",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/BuildingShowResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/buildings/{building}": {
+            "delete": {
+                "tags": [
+                    "Buildings"
+                ],
+                "summary": "Удалить площадку",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "f613ff587f6f65c0db66fdd2d62670a3",
+                "parameters": [
+                    {
+                        "name": "building",
+                        "in": "path",
+                        "description": "ID площадки",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Площадка удалена"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Buildings"
+                ],
+                "summary": "Обновить площадку",
+                "description": "Update the specified resource in storage.",
+                "operationId": "eb021d934a5fa9753a303a053b737139",
+                "parameters": [
+                    {
+                        "name": "building",
+                        "in": "path",
+                        "description": "ID площадки",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateBuildingRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Площадка изменена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BuildingShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cabinets": {
+            "get": {
+                "tags": [
+                    "Cabinets"
+                ],
+                "summary": "Получить список всех кабинетов",
+                "description": "Display a listing of the resource.",
+                "operationId": "f13450e6142746037bb952b26d4cb2b2",
+                "responses": {
+                    "200": {
+                        "description": "Список кабинетов",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/CabinetIndexResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Cabinets"
+                ],
+                "summary": "Создать новый кабинет",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "8ab811dddb177c25085fed41762051de",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreCabinetRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Кабинет создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CabinetShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cabinets/{id}": {
+            "get": {
+                "tags": [
+                    "Cabinets"
+                ],
+                "summary": "Получить кабинет",
+                "description": "Display the specified resource.",
+                "operationId": "14d6656346529841789dbc512f2c7bf4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID кабинета",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Кабинет",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/CabinetShowResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cabinets/{cabinet}": {
+            "delete": {
+                "tags": [
+                    "Cabinets"
+                ],
+                "summary": "Удалить кабинет",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "ed55c4186ff7baaf452bc4dab2b65ad6",
+                "parameters": [
+                    {
+                        "name": "cabinet",
+                        "in": "path",
+                        "description": "ID кабинета",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Кабинет удален"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Cabinets"
+                ],
+                "summary": "Обновить кабинет",
+                "description": "Update the specified resource in storage.",
+                "operationId": "14d9f7c4c8f96935519ec7312012f08e",
+                "parameters": [
+                    {
+                        "name": "cabinet",
+                        "in": "path",
+                        "description": "ID кабинета",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCabinetRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Кабинет изменен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CabinetShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cabinets/buildings/{building}/floor/{floor}": {
+            "get": {
+                "tags": [
+                    "Cabinets"
+                ],
+                "summary": "Получить список кабинетов по этажам площадки",
+                "description": "Display a listing of the resource.",
+                "operationId": "6c16cc482843dabb88e1cebfc88f9a50",
+                "parameters": [
+                    {
+                        "name": "building",
+                        "in": "path",
+                        "description": "ID площадки",
+                        "required": true,
+                        "example": 1
+                    },
+                    {
+                        "name": "floor",
+                        "in": "path",
+                        "description": "Номер этажа",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список кабинетов по этажам площадки",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/CabinetIndexResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cabinet-types": {
+            "get": {
+                "tags": [
+                    "CabinetTypes"
+                ],
+                "summary": "Получить список всех типов кабинета",
+                "description": "Display a listing of the resource.",
+                "operationId": "30824103efd1e9fa5df309aef4d75077",
+                "responses": {
+                    "200": {
+                        "description": "Список типов кабинета",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/CabinetTypeIndexResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "CabinetTypes"
+                ],
+                "summary": "Создать новый тип кабинета",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "fe64c86d2955baf8538ad0f7dd2894ff",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreCabinetTypeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Кабинет создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CabinetTypeShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cabinet-types/{id}": {
+            "get": {
+                "tags": [
+                    "CabinetTypes"
+                ],
+                "summary": "Получить тип кабинета",
+                "description": "Display the specified resource.",
+                "operationId": "066d101a0878094203c7f5ca7e53347b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID типа кабинета",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Тип кабинета",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/CabinetTypeShowResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cabinet-types/{cabinet_type}": {
+            "delete": {
+                "tags": [
+                    "CabinetTypes"
+                ],
+                "summary": "Удалить тип кабинет",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "a10cd268ed1d3de9f6c492c81d43284e",
+                "parameters": [
+                    {
+                        "name": "cabinet_type",
+                        "in": "path",
+                        "description": "ID типа кабинета",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Тип кабинета удален"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "CabinetTypes"
+                ],
+                "summary": "Обновить тип кабинета",
+                "description": "Update the specified resource in storage.",
+                "operationId": "85fe5c2f3ba670543cadbbdb0fb16920",
+                "parameters": [
+                    {
+                        "name": "cabinet_type",
+                        "in": "path",
+                        "description": "ID типа кабинета",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCabinetTypeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Тип кабинета изменен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CabinetTypeShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/equipment-brands": {
+            "get": {
+                "tags": [
+                    "EquipmentBrands"
+                ],
+                "summary": "Получить список всех брендов оборудования",
+                "description": "Display a listing of the resource.",
+                "operationId": "e54783f32253f808f7518fafbf883673",
+                "responses": {
+                    "200": {
+                        "description": "Список брендов оборудования",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/EquipmentBrandIndexResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "EquipmentBrands"
+                ],
+                "summary": "Создать новый бренд оборудования",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "8e71a320a78fca8a16dd6803d3933cd2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreEquipmentBrandRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Бренд оборудования создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EquipmentBrandShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/equipment-brands/{id}": {
+            "get": {
+                "tags": [
+                    "EquipmentBrands"
+                ],
+                "summary": "Получить бренд оборудования",
+                "description": "Display the specified resource.",
+                "operationId": "4adebbea70de8db933e5c6789c8e9e73",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID бренда оборудования",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Бренд оборудования",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/EquipmentBrandShowResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/equipment-brands/{equipment_brand}": {
+            "delete": {
+                "tags": [
+                    "EquipmentBrands"
+                ],
+                "summary": "Удалить бренд оборудования",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "98cf89d198d38a90c7c00cc72e7f6121",
+                "parameters": [
+                    {
+                        "name": "equipment_brand",
+                        "in": "path",
+                        "description": "ID бренда оборудования",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Бренд оборудования удален"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "EquipmentBrands"
+                ],
+                "summary": "Обновить бренд оборудования",
+                "description": "Update the specified resource in storage.",
+                "operationId": "b16c4830f277351394856a7314d9176e",
+                "parameters": [
+                    {
+                        "name": "equipment_brand",
+                        "in": "path",
+                        "description": "ID бренда оборудования",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEquipmentBrandRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Бренд оборудования изменен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EquipmentBrandShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/equipments": {
+            "get": {
+                "tags": [
+                    "Equipments"
+                ],
+                "summary": "Получить список всего оборудования",
+                "description": "Display a listing of the resource.",
+                "operationId": "6ef4946ec56ce0f0c3e613f7c57d37f2",
+                "responses": {
+                    "200": {
+                        "description": "Список оборудования",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/EquipmentIndexResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Equipments"
+                ],
+                "summary": "Создать новое оборудование",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "c95b6d6ae06e995728be5a7e10fcbcc8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreEquipmentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Оборудование создано",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EquipmentShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/equipments/{id}": {
+            "get": {
+                "tags": [
+                    "Equipments"
+                ],
+                "summary": "Получить оборудование",
+                "description": "Display the specified resource.",
+                "operationId": "f5219eb4f4143cf304576feea563c147",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID оборудования",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Оборудование",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/EquipmentShowResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/equipments/{equipment}": {
+            "delete": {
+                "tags": [
+                    "Equipments"
+                ],
+                "summary": "Удалить оборудование",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "3503d7fc2ffb0a5ca3f23b76ff7c2f46",
+                "parameters": [
+                    {
+                        "name": "equipment",
+                        "in": "path",
+                        "description": "ID оборудования",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Оборудование удалено"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Equipments"
+                ],
+                "summary": "Обновить оборудование",
+                "description": "Update the specified resource in storage.",
+                "operationId": "7111afb79e41bfb44428157d1d09c468",
+                "parameters": [
+                    {
+                        "name": "equipment",
+                        "in": "path",
+                        "description": "ID оборудования",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEquipmentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Оборудование изменен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EquipmentShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/equipment-models": {
+            "get": {
+                "tags": [
+                    "EquipmentModels"
+                ],
+                "summary": "Получить список всех моделей оборудования",
+                "description": "Display a listing of the resource.",
+                "operationId": "339cd0d57e62e92503212c0e34158432",
+                "responses": {
+                    "200": {
+                        "description": "Список моделей оборудования",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/EquipmentModelIndexResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "EquipmentModels"
+                ],
+                "summary": "Создать новую модель оборудования",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "882d49cb7214f692ef0e01535a5baa26",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreEquipmentModelRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Модель оборудования создана",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EquipmentModelShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/equipment-models/{id}": {
+            "get": {
+                "tags": [
+                    "EquipmentModels"
+                ],
+                "summary": "Получить модель оборудования",
+                "description": "Display the specified resource.",
+                "operationId": "cd0953d27c0aca674c1c4bc607729423",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID модели оборудования",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Модель оборудования",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/EquipmentModelShowResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/equipment-models/{equipment_model}": {
+            "delete": {
+                "tags": [
+                    "EquipmentModels"
+                ],
+                "summary": "Удалить модель оборудования",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "037ab93c4fe6a9df4435d176d9be13c7",
+                "parameters": [
+                    {
+                        "name": "equipment_model",
+                        "in": "path",
+                        "description": "ID модели оборудования",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Модель оборудования удалена"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "EquipmentModels"
+                ],
+                "summary": "Обновить модель оборудования",
+                "description": "Update the specified resource in storage.",
+                "operationId": "100078a62dadc5aa9385306b44cb3651",
+                "parameters": [
+                    {
+                        "name": "equipment_model",
+                        "in": "path",
+                        "description": "ID модели оборудования",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEquipmentModelRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Модель оборудования изменена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EquipmentModelShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/equipment-types": {
+            "get": {
+                "tags": [
+                    "EquipmentTypes"
+                ],
+                "summary": "Получить список всех типов оборудования",
+                "description": "Display a listing of the resource.",
+                "operationId": "ec6c5f1b3c4f27a50e554a978279d592",
+                "responses": {
+                    "200": {
+                        "description": "Список типов оборудования",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/EquipmentTypeIndexResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "EquipmentTypes"
+                ],
+                "summary": "Создать новый тип оборудования",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "2ac24291c31be24a6e963a9646d1e6c0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreEquipmentTypeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Тип оборудования создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EquipmentTypeShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/equipment-types/{id}": {
+            "get": {
+                "tags": [
+                    "EquipmentTypes"
+                ],
+                "summary": "Получить тип оборудования",
+                "description": "Display the specified resource.",
+                "operationId": "778380a95788dd7e7545b41890e5c46a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID типа оборудования",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Тип оборудования",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/EquipmentTypeShowResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/equipment-types/{equipment_type}": {
+            "delete": {
+                "tags": [
+                    "EquipmentTypes"
+                ],
+                "summary": "Удалить тип оборудования",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "b4e0fd4c0a1c6784ddcdc696f5443226",
+                "parameters": [
+                    {
+                        "name": "equipment_type",
+                        "in": "path",
+                        "description": "ID типа оборудования",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Тип оборудования удален"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "EquipmentTypes"
+                ],
+                "summary": "Обновить тип оборудования",
+                "description": "Update the specified resource in storage.",
+                "operationId": "ecb2e1e80fb689a33dda95ed83bb1237",
+                "parameters": [
+                    {
+                        "name": "equipment_type",
+                        "in": "path",
+                        "description": "ID типа оборудования",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEquipmentTypeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Тип оборудования изменен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EquipmentTypeShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/furnitures": {
+            "get": {
+                "tags": [
+                    "Furniture"
+                ],
+                "summary": "Получить список всей мебели",
+                "description": "Display a listing of the resource.",
+                "operationId": "fb42f6e14de6bb8e225407c797933165",
+                "responses": {
+                    "200": {
+                        "description": "Список мебели",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/FurnitureIndexResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Furniture"
+                ],
+                "summary": "Создать новую мебель",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "cfcc05a47a48b3e13a3f2ff8f8384451",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreFurnitureRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Мебель создана",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FurnitureShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/furnitures/{id}": {
+            "get": {
+                "tags": [
+                    "Furniture"
+                ],
+                "summary": "Получить мебель",
+                "description": "Display the specified resource.",
+                "operationId": "01685a1934793f695dbc92951c737f72",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID мебели",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Мебель",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/FurnitureShowResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/furnitures/{furniture}": {
+            "delete": {
+                "tags": [
+                    "Furniture"
+                ],
+                "summary": "Удалить мебель",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "9b1d541ed5a5062194588a7b72081f37",
+                "parameters": [
+                    {
+                        "name": "furniture",
+                        "in": "path",
+                        "description": "ID мебели",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Мебель удалена"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Furniture"
+                ],
+                "summary": "Обновить мебель",
+                "description": "Update the specified resource in storage.",
+                "operationId": "463b57d2c73e3b01f881ae82380df55d",
+                "parameters": [
+                    {
+                        "name": "furniture",
+                        "in": "path",
+                        "description": "ID мебели",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateFurnitureRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Мебель изменена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FurnitureShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/furniture-types": {
+            "get": {
+                "tags": [
+                    "FurnitureType"
+                ],
+                "summary": "Получить список всех типов мебели",
+                "description": "Display a listing of the resource.",
+                "operationId": "f149c54f3a7cc2d4e641bfbf9d39ea8d",
+                "responses": {
+                    "200": {
+                        "description": "Список типов мебели",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/FurnitureTypeIndexResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "FurnitureType"
+                ],
+                "summary": "Создать новый тип мебели",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "eee642709a8080eaae724e1e3038f2d2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreFurnitureTypeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Тип мебели создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FurnitureTypeShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/furniture-types/{id}": {
+            "get": {
+                "tags": [
+                    "FurnitureType"
+                ],
+                "summary": "Получить тип мебели",
+                "description": "Display the specified resource.",
+                "operationId": "b4f40ac2bf25d6e4644332e1a666f4ae",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID типа мебели",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Тип мебели",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/FurnitureTypeShowResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/furniture-types/{furniture-type}": {
+            "delete": {
+                "tags": [
+                    "FurnitureType"
+                ],
+                "summary": "Удалить тип мебели",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "e40781b1d5bed87ad00b24d54b3352bf",
+                "parameters": [
+                    {
+                        "name": "furniture-type",
+                        "in": "path",
+                        "description": "ID типа мебели",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Тип мебели удален"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "FurnitureType"
+                ],
+                "summary": "Обновить тип мебели",
+                "description": "Update the specified resource in storage.",
+                "operationId": "344d81c5267e5e4b6f1efe43379dac05",
+                "parameters": [
+                    {
+                        "name": "furniture-type",
+                        "in": "path",
+                        "description": "ID типа мебели",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateFurnitureTypeRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Тип мебель изменен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FurnitureTypeShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Получить список всех заявок",
+                "description": "Display a listing of the resource.",
+                "operationId": "2cd7e03021e72d9d799c12dfe179c865",
+                "responses": {
+                    "200": {
+                        "description": "Список заявок",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/OrderIndexResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Создать новую заявку",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "d690d6834318e9b064df441e854de8b9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreOrderRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Заявка создана",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders/{id}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Получить заявку",
+                "description": "Display the specified resource.",
+                "operationId": "c29621029e70f65247909d3e09031118",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID заявки",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Заявка",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/OrderShowResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders/{order}": {
+            "delete": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Удалить заявку",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "173211a50d204e6c949d9b18baa95efb",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "ID заявки",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Заявка удалена"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Обновить заявку",
+                "description": "Update the specified resource in storage.",
+                "operationId": "777bd8391d3cf8ab456dd254aed4b367",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "ID заявки",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateOrderRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Заявка изменена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/roles": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Получить список всех ролей",
+                "description": "Display a listing of the resource.",
+                "operationId": "77e3636d8592997ce9d6d27b50857a69",
+                "responses": {
+                    "200": {
+                        "description": "Список ролей",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/RoleIndexResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Создать новую роль",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "4a563842fbfcad237f63da43065fca3d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreRoleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Роль создана",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RoleShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/roles/{id}": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Получить роль",
+                "description": "Display the specified resource.",
+                "operationId": "7fb0667a295b7678a30353aa11739683",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID роли",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Роль",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/RoleShowResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/roles/{role}": {
+            "delete": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Удалить роль",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "b96c05ea55ef4e3d29464b1b62c469aa",
+                "parameters": [
+                    {
+                        "name": "role",
+                        "in": "path",
+                        "description": "ID роли",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Роль удалена"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Обновить роль",
+                "description": "Update the specified resource in storage.",
+                "operationId": "7f6d6aaadac1d9e173b83968822cfd5e",
+                "parameters": [
+                    {
+                        "name": "role",
+                        "in": "path",
+                        "description": "ID роли",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateRoleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Роль изменена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RoleShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Получить список всех пользователей",
+                "description": "Display a listing of the resource.",
+                "operationId": "c457726701591d1183b53aa71fc13441",
+                "responses": {
+                    "200": {
+                        "description": "Список пользователей",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/UserIndexResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Создать нового пользователя",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "592819a0265360b2014512d6dbfaf0e7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreUserRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Пользователь создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/users/{id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Получить пользователя",
+                "description": "Display the specified resource.",
+                "operationId": "36a33ff774d5cba33c039dec2c3e0287",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID пользователя",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Пользователь",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/UserShowResource"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/users/{user}": {
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Удалить пользователя",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "e0f9a385a1d6788b99e519bd98cf7239",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "ID пользователя",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Пользователь удален"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Обновить пользователя",
+                "description": "Update the specified resource in storage.",
+                "operationId": "2eea0b6e40fa6e600a841277b6e2ff01",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "ID пользователя",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUserRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Пользователь изменен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserShowResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "StoreBuildingRequest": {
+                "title": "Запрос на создание площадки",
+                "description": "Данные для создания новой площадки",
+                "required": [
+                    "title",
+                    "address",
+                    "floor"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Анадырский"
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "Москва, Анадырский проезд, 79"
+                    },
+                    "floor": {
+                        "type": "integer",
+                        "example": 3
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateBuildingRequest": {
+                "title": "Запрос на обновление площадки",
+                "description": "Данные для обновления площадки",
+                "required": [
+                    "title",
+                    "address",
+                    "floor"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Анадырский"
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "Москва, Анадырский проезд, 79"
+                    },
+                    "floor": {
+                        "type": "integer",
+                        "example": 3
+                    }
+                },
+                "type": "object"
+            },
+            "StoreCabinetRequest": {
+                "title": "Запрос на создание кабинета",
+                "description": "Данные для создания нового кабинета",
+                "required": [
+                    "cabinet_type_id",
+                    "building_id",
+                    "title",
+                    "cabinet_number",
+                    "floor"
+                ],
+                "properties": {
+                    "cabinet_type_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "building_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Лаборатория информационных технологий"
+                    },
+                    "cabinet_number": {
+                        "type": "integer",
+                        "example": 321
+                    },
+                    "floor": {
+                        "type": "integer",
+                        "example": 3
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateCabinetRequest": {
+                "title": "Запрос на изменение кабинета",
+                "description": "Данные для обновления кабинета",
+                "required": [
+                    "cabinet_type_id",
+                    "building_id",
+                    "title",
+                    "cabinet_number",
+                    "floor"
+                ],
+                "properties": {
+                    "cabinet_type_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "building_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Лаборатория информационных технологий"
+                    },
+                    "cabinet_number": {
+                        "type": "integer",
+                        "example": 321
+                    },
+                    "floor": {
+                        "type": "integer",
+                        "example": 3
+                    }
+                },
+                "type": "object"
+            },
+            "StoreCabinetTypeRequest": {
+                "title": "Запрос на создание кабинета",
+                "description": "Данные для создания нового типа кабинета",
+                "required": [
+                    "title"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Лаборатория"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateCabinetTypeRequest": {
+                "title": "Запрос на обновление типа кабинета",
+                "description": "Данные для создания нового кабинета",
+                "required": [
+                    "title"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Лаборатория"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreEquipmentRequest": {
+                "title": "Запрос на создание оборудования",
+                "description": "Данные для создания нового оборудования",
+                "required": [
+                    "equipment_model_id",
+                    "cabinet_id",
+                    "inventory_number"
+                ],
+                "properties": {
+                    "equipment_model_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "cabinet_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "inventory_number": {
+                        "type": "integer",
+                        "example": 55555555
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateEquipmentRequest": {
+                "title": "Запрос на обновление оборудования",
+                "description": "Данные для обновления оборудования",
+                "required": [
+                    "equipment_model_id",
+                    "cabinet_id",
+                    "inventory_number"
+                ],
+                "properties": {
+                    "equipment_model_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "cabinet_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "inventory_number": {
+                        "type": "integer",
+                        "example": 55555555
+                    }
+                },
+                "type": "object"
+            },
+            "StoreEquipmentBrandRequest": {
+                "title": "Запрос на создание бренда оборудования",
+                "description": "Данные для создания нового бренда оборудования",
+                "required": [
+                    "equipment_type_id",
+                    "title"
+                ],
+                "properties": {
+                    "equipment_type_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "HP"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateEquipmentBrandRequest": {
+                "title": "Запрос на обновление бренда оборудования",
+                "description": "Данные для обновления бренда оборудования",
+                "required": [
+                    "equipment_type_id",
+                    "title"
+                ],
+                "properties": {
+                    "equipment_type_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "HP"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreEquipmentModelRequest": {
+                "title": "Запрос на создание модели оборудования",
+                "description": "Данные для создания новой модели оборудования",
+                "required": [
+                    "title",
+                    "equipment_brand_id"
+                ],
+                "properties": {
+                    "equipment_brand_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "EXP-123"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateEquipmentModelRequest": {
+                "title": "Запрос на обновление модели оборудования",
+                "description": "Данные для обновления модели оборудования",
+                "required": [
+                    "title",
+                    "equipment_brand_id"
+                ],
+                "properties": {
+                    "equipment_brand_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "EXP-123"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreEquipmentTypeRequest": {
+                "title": "Запрос на создание типа оборудования",
+                "description": "Данные для создания нового типа оборудования",
+                "required": [
+                    "title"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "HP"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateEquipmentTypeRequest": {
+                "title": "Запрос на обновление типа оборудования",
+                "description": "Данные для обновления типа оборудования",
+                "required": [
+                    "title"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "HP"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreFurnitureRequest": {
+                "title": "Запрос на создание мебели",
+                "description": "Данные для создания новой мебели",
+                "required": [
+                    "furniture_type_id",
+                    "cabinet_id",
+                    "inventory_number"
+                ],
+                "properties": {
+                    "furniture_type_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "cabinet_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "inventory_number": {
+                        "type": "integer",
+                        "example": 5555555
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateFurnitureRequest": {
+                "title": "Запрос на обновление мебели",
+                "description": "Данные для обновления мебели",
+                "required": [
+                    "furniture_type_id",
+                    "cabinet_id",
+                    "inventory_number"
+                ],
+                "properties": {
+                    "furniture_type_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "cabinet_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "inventory_number": {
+                        "type": "integer",
+                        "example": 5555555
+                    }
+                },
+                "type": "object"
+            },
+            "StoreFurnitureTypeRequest": {
+                "title": "Запрос на создание типа мебели",
+                "description": "Данные для создания нового типа мебели",
+                "required": [
+                    "title"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Стол"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateFurnitureTypeRequest": {
+                "title": "Запрос на обновление типа мебели",
+                "description": "Данные для обновления нового типа мебели",
+                "required": [
+                    "title"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Стол"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreOrderRequest": {
+                "title": "Запрос на создание заявки",
+                "description": "Данные для создания новой заявки",
+                "required": [
+                    "user_id",
+                    "order_type",
+                    "status",
+                    "items"
+                ],
+                "properties": {
+                    "user_id": {
+                        "type": "integer",
+                        "example": "HP"
+                    },
+                    "order_type": {
+                        "type": "string",
+                        "example": "HP"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "HP"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "orderable_id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "orderable_type": {
+                                    "type": "string",
+                                    "example": "App\\Models\\Equipment"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateOrderRequest": {
+                "title": "Запрос на обновление заявки",
+                "description": "Данные для обновления заявки",
+                "required": [
+                    "user_id",
+                    "order_type",
+                    "status",
+                    "items"
+                ],
+                "properties": {
+                    "user_id": {
+                        "type": "integer",
+                        "example": "HP"
+                    },
+                    "order_type": {
+                        "type": "string",
+                        "example": "HP"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "HP"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "orderable_id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "orderable_type": {
+                                    "type": "string",
+                                    "example": "App\\Models\\Equipment"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "StoreRoleRequest": {
+                "title": "Запрос на создание роли",
+                "description": "Данные для создания новой роли",
+                "required": [
+                    "title"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Инженер"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateRoleRequest": {
+                "title": "Запрос на обновление роли",
+                "description": "Данные для обновления новой роли",
+                "required": [
+                    "title"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Инженер"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreUserRequest": {
+                "title": "Запрос на создание пользователя",
+                "description": "Данные для создания нового пользователя",
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation",
+                    "roles"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Иванов Иван"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "ivanov@mail.com"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "password_confirmation": {
+                        "type": "string"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUserRequest": {
+                "title": "Запрос на обновление пользователя",
+                "description": "Данные для обновления пользователя",
+                "required": [
+                    "name",
+                    "email",
+                    "roles"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Иванов Иван"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "ivanov@mail.com"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "password_confirmation": {
+                        "type": "string"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "BuildingIndexResource": {
+                "title": "Ресурс списка площадок",
+                "description": "Формат данных площадок при получении списка",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "Анадырский"
+                                },
+                                "address": {
+                                    "type": "string",
+                                    "example": "Москва, Анадырский проезд, 79"
+                                },
+                                "floor": {
+                                    "type": "integer",
+                                    "example": 3
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "BuildingShowResource": {
+                "title": "Ресурс площадки",
+                "description": "Формат данных площадки",
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "title": {
+                                "type": "string",
+                                "example": "Анадырский"
+                            },
+                            "address": {
+                                "type": "string",
+                                "example": "Москва, Анадырский проезд, 79"
+                            },
+                            "floor": {
+                                "type": "integer",
+                                "example": 3
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "CabinetIndexResource": {
+                "title": "Ресурс списка кабинетов",
+                "description": "Формат данных кабинета при получении списка",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "cabinet_type": {
+                                    "type": "string",
+                                    "example": "Лаборатория"
+                                },
+                                "building": {
+                                    "type": "string",
+                                    "example": "Анадырский"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "Лаборатория информационных технологий"
+                                },
+                                "cabinet_number": {
+                                    "type": "integer",
+                                    "example": 321
+                                },
+                                "floor": {
+                                    "type": "integer",
+                                    "example": 3
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "CabinetShowResource": {
+                "title": "Ресурс кабинета",
+                "description": "Формат данных кабинета",
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "cabinet_type": {
+                                "type": "string",
+                                "example": "Лаборатория"
+                            },
+                            "building": {
+                                "type": "string",
+                                "example": "Анадырский"
+                            },
+                            "title": {
+                                "type": "string",
+                                "example": "Лаборатория информационных технологий"
+                            },
+                            "cabinet_number": {
+                                "type": "integer",
+                                "example": 321
+                            },
+                            "floor": {
+                                "type": "integer",
+                                "example": 3
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "CabinetTypeIndexResource": {
+                "title": "Ресурс списка типов кабинетов",
+                "description": "Формат данных типов кабинетов при получении списка",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "Лаборатория"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "CabinetTypeShowResource": {
+                "title": "Ресурс типа кабинета",
+                "description": "Формат данных типа кабинета",
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "title": {
+                                "type": "string",
+                                "example": "Лаборатория"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "EquipmentIndexResource": {
+                "title": "Ресурс списка оборудования",
+                "description": "Формат данных оборудования при получении списка",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "equipment_model": {
+                                    "type": "string",
+                                    "example": "EXP-123"
+                                },
+                                "cabinet_id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "inventory_number": {
+                                    "type": "integer",
+                                    "example": 555555555
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "EquipmentShowResource": {
+                "title": "Ресурс оборудования",
+                "description": "Формат данных оборудования",
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "equipment_model": {
+                                "type": "string",
+                                "example": "EXP-123"
+                            },
+                            "cabinet_number": {
+                                "type": "integer",
+                                "example": 321
+                            },
+                            "inventory_number": {
+                                "type": "integer",
+                                "example": 555555555
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "EquipmentBrandIndexResource": {
+                "title": "Ресурс списка брендов оборудования",
+                "description": "Формат данных брендов оборудования при получении списка",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "equipment_type": {
+                                    "type": "string",
+                                    "example": "Системный блок"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "HP"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "EquipmentBrandShowResource": {
+                "title": "Ресурс брендов оборудования",
+                "description": "Формат данных брендов оборудования",
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "equipment_type": {
+                                "type": "string",
+                                "example": "Системный блок"
+                            },
+                            "title": {
+                                "type": "string",
+                                "example": "HP"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "EquipmentModelIndexResource": {
+                "title": "Ресурс списка моделей оборудования",
+                "description": "Формат данных моделей оборудования при получении списка",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "equipment_type": {
+                                    "type": "string",
+                                    "example": "HP"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "EXP-123"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "EquipmentModelShowResource": {
+                "title": "Ресурс модели оборудования",
+                "description": "Формат данных модели оборудования",
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "equipment_brand": {
+                                "type": "string",
+                                "example": "HP"
+                            },
+                            "title": {
+                                "type": "string",
+                                "example": "EXP-123"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "EquipmentTypeIndexResource": {
+                "title": "Ресурс списка типа оборудования",
+                "description": "Формат данных типа оборудования при получении списка",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "Системный блок"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "EquipmentTypeShowResource": {
+                "title": "Ресурс типа оборудования",
+                "description": "Формат данных типа оборудования",
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "title": {
+                                "type": "string",
+                                "example": "Системный блок"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "FurnitureIndexResource": {
+                "title": "Ресурс списка мебели",
+                "description": "Формат данных мебели при получении списка",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "furniture_type": {
+                                    "type": "string",
+                                    "example": "Стол"
+                                },
+                                "cabinet": {
+                                    "type": "integer",
+                                    "example": 321
+                                },
+                                "inventory_number": {
+                                    "type": "integer",
+                                    "example": 55555555
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "FurnitureShowResource": {
+                "title": "Ресурс мебели",
+                "description": "Формат данных мебели",
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "furniture_type": {
+                                "type": "string",
+                                "example": "Стол"
+                            },
+                            "cabinet": {
+                                "type": "integer",
+                                "example": 321
+                            },
+                            "inventory_number": {
+                                "type": "integer",
+                                "example": "Белый 140х80х75"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "FurnitureTypeIndexResource": {
+                "title": "Ресурс списка типа мебели",
+                "description": "Формат данных типа мебели при получении списка",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "Стол"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "FurnitureTypeShowResource": {
+                "title": "Ресурс типа мебели",
+                "description": "Формат данных типа мебели",
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "title": {
+                                "type": "string",
+                                "example": "Стол"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "OrderIndexResource": {
+                "title": "Ресурс списка заявки",
+                "description": "Формат данных заявки при получении списка",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "user": {
+                                    "type": "string",
+                                    "example": "Иванов Иван"
+                                },
+                                "order_type": {
+                                    "type": "string",
+                                    "example": "В работе"
+                                },
+                                "status": {
+                                    "type": "string",
+                                    "example": "Новый"
+                                },
+                                "created_at": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "example": "Y-m-d H:i:s"
+                                },
+                                "updated_at": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "example": "Y-m-d H:i:s"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "OrderShowResource": {
+                "title": "Ресурс заявки",
+                "description": "Формат данных заявки",
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "user": {
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Иванов Иван"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "ivanovi@mail.ru"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "order_type": {
+                                "type": "string",
+                                "example": "Установка"
+                            },
+                            "status": {
+                                "type": "string",
+                                "example": "В работе"
+                            },
+                            "created_at": {
+                                "type": "string",
+                                "format": "date",
+                                "example": "2025-03-05 17:29:05"
+                            },
+                            "updated_at": {
+                                "type": "integer",
+                                "example": "2025-03-05 17:29:05"
+                            },
+                            "equipment": {
+                                "type": "array",
+                                "items": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "equipment_model": {
+                                            "type": "string",
+                                            "example": "EXP-123"
+                                        },
+                                        "cabinet_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "inventory_number": {
+                                            "type": "integer",
+                                            "example": 555555555
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "furniture": {
+                                "type": "array",
+                                "items": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "furniture_type": {
+                                            "type": "string",
+                                            "example": "Стол"
+                                        },
+                                        "cabinet": {
+                                            "type": "integer",
+                                            "example": 321
+                                        },
+                                        "inventory_number": {
+                                            "type": "integer",
+                                            "example": 55555555
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "RoleIndexResource": {
+                "title": "Ресурс списка ролей",
+                "description": "Формат данных ролей при получении списка",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "Инженер"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "RoleShowResource": {
+                "title": "Ресурс роли",
+                "description": "Формат данных роли",
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "title": {
+                                "type": "string",
+                                "example": "Инженер"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "UserIndexResource": {
+                "title": "Ресурс списка пользователей",
+                "description": "Формат данных брендов оборудования при получении списка",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example": "Системный блок"
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "example": "HP"
+                                },
+                                "role": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/RoleShowResource"
+                                    }
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "UserShowResource": {
+                "title": "Ресурс пользователя",
+                "description": "Формат данных пользователя",
+                "properties": {
+                    "data": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "Иванов Иван"
+                            },
+                            "email": {
+                                "type": "string",
+                                "example": "ivanovi@mail.ru"
+                            },
+                            "role": {
+                                "type": "array",
+                                "items": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "Инженер"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Управление авторизацией"
+        },
+        {
+            "name": "Buildings",
+            "description": "Управление площадками"
+        },
+        {
+            "name": "Cabinets",
+            "description": "Управление кабинетами"
+        },
+        {
+            "name": "CabinetTypes",
+            "description": "Управление типами кабинетов"
+        },
+        {
+            "name": "EquipmentBrands",
+            "description": "Управление брендами оборудования"
+        },
+        {
+            "name": "Equipments",
+            "description": "Управление оборудованием"
+        },
+        {
+            "name": "EquipmentModels",
+            "description": "Управление моделями оборудования"
+        },
+        {
+            "name": "EquipmentTypes",
+            "description": "Управление типами оборудования"
+        },
+        {
+            "name": "Furniture",
+            "description": "Управление мебелью"
+        },
+        {
+            "name": "FurnitureType",
+            "description": "Управление типами мебели"
+        },
+        {
+            "name": "Orders",
+            "description": "Управление заявками"
+        },
+        {
+            "name": "Roles",
+            "description": "Управление ролями"
+        },
+        {
+            "name": "Users",
+            "description": "Управление пользователями"
+        }
+    ]
+}

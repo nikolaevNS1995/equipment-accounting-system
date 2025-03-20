@@ -4,6 +4,15 @@ namespace App\Http\Requests\FurnitureType;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @OA\Schema(
+ *     schema="UpdateFurnitureTypeRequest",
+ *     title="Запрос на обновление типа мебели",
+ *     description="Данные для обновления нового типа мебели",
+ *     required={"title"},
+ *     @OA\Property(property="title", type="string", example="Стол"),
+ * )
+ */
 class UpdateFurnitureTypeRequest extends FormRequest
 {
     /**

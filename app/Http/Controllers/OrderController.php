@@ -13,6 +13,12 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * @OA\Tag(
+ *     name="Orders",
+ *     description="Управление заявками"
+ * )
+ */
 class OrderController extends Controller
 {
     protected OrderService $service;
@@ -24,6 +30,22 @@ class OrderController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * @OA\Get(
+     *            path="/api/orders",
+     *            summary="Получить список всех заявок",
+     *            tags={"Orders"},
+     *            security={{ "bearerAuth": {} }},
+     *            @OA\Response(
+     *                response=200,
+     *                description="Список заявок",
+     *                @OA\JsonContent(
+     *                    allOf={
+     *                        @OA\Schema(ref="#/components/schemas/OrderIndexResource")
+     *                    }
+     *                )
+     *            )
+     *    )
      */
     public function index(): AnonymousResourceCollection
     {
@@ -34,6 +56,22 @@ class OrderController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @OA\Post(
+     *            path="/api/orders",
+     *            summary="Создать новую заявку",
+     *            tags={"Orders"},
+     *            security={{ "bearerAuth": {} }},
+     *            @OA\RequestBody(
+     *                required=true,
+     *                @OA\JsonContent(ref="#/components/schemas/StoreOrderRequest")
+     *            ),
+     *            @OA\Response(
+     *                response=201,
+     *                description="Заявка создана",
+     *                @OA\JsonContent(ref="#/components/schemas/OrderShowResource")
+     *            )
+     *     )
      * @throws \Exception
      */
     public function store(StoreOrderRequest $request): ShowResource
@@ -46,6 +84,29 @@ class OrderController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @OA\Get(
+     *             path="/api/orders/{id}",
+     *             summary="Получить заявку",
+     *             tags={"Orders"},
+     *             security={{ "bearerAuth": {} }},
+     *             @OA\Parameter(
+     *                 name="id",
+     *                 in="path",
+     *                 required=true,
+     *                 example=1,
+     *                 description="ID заявки"
+     *             ),
+     *             @OA\Response(
+     *                 response=200,
+     *                 description="Заявка",
+     *                 @OA\JsonContent(
+     *                     allOf={
+     *                         @OA\Schema(ref="#/components/schemas/OrderShowResource")
+     *                     }
+     *                 )
+     *             )
+     *     )
      */
     public function show(int $id): ShowResource
     {
@@ -56,6 +117,29 @@ class OrderController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @OA\Patch(
+     *             path="/api/orders/{order}",
+     *             summary="Обновить заявку",
+     *             tags={"Orders"},
+     *             security={{ "bearerAuth": {} }},
+     *             @OA\Parameter(
+     *                  name="order",
+     *                  in="path",
+     *                  required=true,
+     *                  example=1,
+     *                  description="ID заявки"
+     *             ),
+     *             @OA\RequestBody(
+     *                 required=true,
+     *                 @OA\JsonContent(ref="#/components/schemas/UpdateOrderRequest")
+     *             ),
+     *             @OA\Response(
+     *                 response=200,
+     *                 description="Заявка изменена",
+     *                 @OA\JsonContent(ref="#/components/schemas/OrderShowResource")
+     *             )
+     *      )
      * @throws \Exception
      */
     public function update(UpdateOrderRequest $request, Order $order): ShowResource
@@ -68,6 +152,24 @@ class OrderController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @OA\Delete(
+     *              path="/api/orders/{order}",
+     *              summary="Удалить заявку",
+     *              tags={"Orders"},
+     *              security={{ "bearerAuth": {} }},
+     *              @OA\Parameter(
+     *                   name="order",
+     *                   in="path",
+     *                   required=true,
+     *                   example=1,
+     *                   description="ID заявки"
+     *              ),
+     *              @OA\Response(
+     *                  response=204,
+     *                  description="Заявка удалена",
+     *              )
+     *      )
      * @throws \Exception
      */
     public function destroy(Order $order): Response|JsonResponse

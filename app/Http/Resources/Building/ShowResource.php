@@ -5,6 +5,19 @@ namespace App\Http\Resources\Building;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @OA\Schema(
+ *     schema="BuildingShowResource",
+ *     title="Ресурс площадки",
+ *     description="Формат данных площадки",
+ *     @OA\Property(property="data", type="object",
+ *         @OA\Property(property="id", type="integer", example=1),
+ *         @OA\Property(property="title", type="string", example="Анадырский"),
+ *         @OA\Property(property="address", type="string", example="Москва, Анадырский проезд, 79"),
+ *         @OA\Property(property="floor", type="integer", example=3),
+ *     )
+ * )
+ */
 class ShowResource extends JsonResource
 {
     /**

@@ -13,6 +13,12 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * @OA\Tag(
+ *     name="Equipments",
+ *     description="Управление оборудованием"
+ * )
+ */
 class EquipmentController extends Controller
 {
     protected EquipmentService $service;
@@ -23,6 +29,22 @@ class EquipmentController extends Controller
     }
     /**
      * Display a listing of the resource.
+     *
+     * @OA\Get(
+     *          path="/api/equipments",
+     *          summary="Получить список всего оборудования",
+     *          tags={"Equipments"},
+     *          security={{ "bearerAuth": {} }},
+     *          @OA\Response(
+     *              response=200,
+     *              description="Список оборудования",
+     *              @OA\JsonContent(
+     *                  allOf={
+     *                      @OA\Schema(ref="#/components/schemas/EquipmentIndexResource")
+     *                  }
+     *              )
+     *          )
+     *  )
      */
     public function index(): AnonymousResourceCollection
     {
@@ -33,6 +55,22 @@ class EquipmentController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @OA\Post(
+     *          path="/api/equipments",
+     *          summary="Создать новое оборудование",
+     *          tags={"Equipments"},
+     *          security={{ "bearerAuth": {} }},
+     *          @OA\RequestBody(
+     *              required=true,
+     *              @OA\JsonContent(ref="#/components/schemas/StoreEquipmentRequest")
+     *          ),
+     *          @OA\Response(
+     *              response=201,
+     *              description="Оборудование создано",
+     *              @OA\JsonContent(ref="#/components/schemas/EquipmentShowResource")
+     *          )
+     *   )
      * @throws \Exception
      */
     public function store(StoreEquipmentRequest $request): ShowResource
@@ -45,6 +83,29 @@ class EquipmentController extends Controller
 
     /**
      * Display the specified resource.
+     *
+     * @OA\Get(
+     *           path="/api/equipments/{id}",
+     *           summary="Получить оборудование",
+     *           tags={"Equipments"},
+     *           security={{ "bearerAuth": {} }},
+     *           @OA\Parameter(
+     *               name="id",
+     *               in="path",
+     *               required=true,
+     *               example=1,
+     *               description="ID оборудования"
+     *           ),
+     *           @OA\Response(
+     *               response=200,
+     *               description="Оборудование",
+     *               @OA\JsonContent(
+     *                   allOf={
+     *                       @OA\Schema(ref="#/components/schemas/EquipmentShowResource")
+     *                   }
+     *               )
+     *           )
+     *   )
      */
     public function show(int $id): ShowResource
     {
@@ -55,6 +116,29 @@ class EquipmentController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @OA\Patch(
+     *           path="/api/equipments/{equipment}",
+     *           summary="Обновить оборудование",
+     *           tags={"Equipments"},
+     *           security={{ "bearerAuth": {} }},
+     *           @OA\Parameter(
+     *                name="equipment",
+     *                in="path",
+     *                required=true,
+     *                example=1,
+     *                description="ID оборудования"
+     *           ),
+     *           @OA\RequestBody(
+     *               required=true,
+     *               @OA\JsonContent(ref="#/components/schemas/UpdateEquipmentRequest")
+     *           ),
+     *           @OA\Response(
+     *               response=200,
+     *               description="Оборудование изменен",
+     *               @OA\JsonContent(ref="#/components/schemas/EquipmentShowResource")
+     *           )
+     *    )
      * @throws \Exception
      */
     public function update(UpdateEquipmentRequest $request, Equipment $equipment): ShowResource
@@ -67,6 +151,24 @@ class EquipmentController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @OA\Delete(
+     *            path="/api/equipments/{equipment}",
+     *            summary="Удалить оборудование",
+     *            tags={"Equipments"},
+     *            security={{ "bearerAuth": {} }},
+     *            @OA\Parameter(
+     *                 name="equipment",
+     *                 in="path",
+     *                 required=true,
+     *                 example=1,
+     *                 description="ID оборудования"
+     *            ),
+     *            @OA\Response(
+     *                response=204,
+     *                description="Оборудование удалено",
+     *            )
+     *    )
      * @throws \Exception
      */
     public function destroy(Equipment $equipment): Response|JsonResponse

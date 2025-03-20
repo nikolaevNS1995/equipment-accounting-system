@@ -4,6 +4,17 @@ namespace App\Http\Requests\Equipment;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @OA\Schema(
+ *     schema="StoreEquipmentRequest",
+ *     title="Запрос на создание оборудования",
+ *     description="Данные для создания нового оборудования",
+ *     required={"equipment_model_id", "cabinet_id", "inventory_number"},
+ *     @OA\Property(property="equipment_model_id", type="integer", example=1),
+ *     @OA\Property(property="cabinet_id", type="integer", example=1),
+ *     @OA\Property(property="inventory_number", type="integer", example=55555555),
+ * )
+ */
 class StoreEquipmentRequest extends FormRequest
 {
     /**

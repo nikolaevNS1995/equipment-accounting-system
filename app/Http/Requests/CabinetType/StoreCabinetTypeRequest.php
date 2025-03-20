@@ -4,6 +4,15 @@ namespace App\Http\Requests\CabinetType;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @OA\Schema(
+ *     schema="StoreCabinetTypeRequest",
+ *     title="Запрос на создание кабинета",
+ *     description="Данные для создания нового типа кабинета",
+ *     required={"title"},
+ *     @OA\Property(property="title", type="string", example="Лаборатория"),
+ * )
+ */
 class StoreCabinetTypeRequest extends FormRequest
 {
     /**

@@ -4,6 +4,19 @@ namespace App\Http\Requests\Cabinet;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @OA\Schema(
+ *     schema="StoreCabinetRequest",
+ *     title="Запрос на создание кабинета",
+ *     description="Данные для создания нового кабинета",
+ *     required={"cabinet_type_id", "building_id", "title", "cabinet_number", "floor"},
+ *     @OA\Property(property="cabinet_type_id", type="integer", example=1),
+ *     @OA\Property(property="building_id", type="integer", example=1),
+ *     @OA\Property(property="title", type="string", example="Лаборатория информационных технологий"),
+ *     @OA\Property(property="cabinet_number", type="integer", example=321),
+ *     @OA\Property(property="floor", type="integer", example=3)
+ * )
+ */
 class StoreCabinetRequest extends FormRequest
 {
     /**

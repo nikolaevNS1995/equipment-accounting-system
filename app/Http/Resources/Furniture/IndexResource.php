@@ -5,6 +5,21 @@ namespace App\Http\Resources\Furniture;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @OA\Schema(
+ *     schema="FurnitureIndexResource",
+ *     title="Ресурс списка мебели",
+ *     description="Формат данных мебели при получении списка",
+ *     @OA\Property(property="data", type="array",
+ *         @OA\Items(
+ *             @OA\Property(property="id", type="integer", example=1),
+ *             @OA\Property(property="furniture_type", type="string", example="Стол"),
+ *             @OA\Property(property="cabinet", type="integer", example=321),
+ *             @OA\Property(property="inventory_number", type="integer", example=55555555),
+ *         )
+ *     )
+ * )
+ */
 class IndexResource extends JsonResource
 {
     /**

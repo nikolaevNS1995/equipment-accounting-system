@@ -4,6 +4,17 @@ namespace App\Http\Requests\Building;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @OA\Schema(
+ *     schema="UpdateBuildingRequest",
+ *     title="Запрос на обновление площадки",
+ *     description="Данные для обновления площадки",
+ *     required={"title", "address", "floor"},
+ *     @OA\Property(property="title", type="string", example="Анадырский"),
+ *     @OA\Property(property="address", type="string", example="Москва, Анадырский проезд, 79"),
+ *     @OA\Property(property="floor", type="integer", example=3)
+ * )
+ */
 class UpdateBuildingRequest extends FormRequest
 {
     /**

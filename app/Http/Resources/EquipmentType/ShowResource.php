@@ -5,6 +5,17 @@ namespace App\Http\Resources\EquipmentType;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @OA\Schema(
+ *     schema="EquipmentTypeShowResource",
+ *     title="Ресурс типа оборудования",
+ *     description="Формат данных типа оборудования",
+ *     @OA\Property(property="data", type="object",
+ *         @OA\Property(property="id", type="integer", example=1),
+ *         @OA\Property(property="title", type="string", example="Системный блок"),
+ *     )
+ * )
+ */
 class ShowResource extends JsonResource
 {
     /**

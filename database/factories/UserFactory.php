@@ -29,11 +29,11 @@ class UserFactory extends Factory
             ['name' => 'Мария Петрова', 'email' => 'maria@example.com'],
         ];
 
-        $user = array_shift($users);
+       // $user = array_shift($users);
 
         return [
-            'name' => $user['name'],
-            'email' => $user['email'],
+            'name' =>  $users[rand(0,2)]['name'],
+            'email' => $users[rand(0,2)]['email'],
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
             'remember_token' => Str::random(10),
