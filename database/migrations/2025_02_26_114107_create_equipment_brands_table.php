@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('equipment_brands', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('equipment_type_id');
+            $table->string('title');
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->index('equipment_type_id');
+
+            $table->foreign('equipment_type_id')->references('id')->on('equipment_types')->onDelete('cascade');
         });
     }
 

@@ -1,66 +1,157 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📦 Учет оборудования и мебели — Laravel 11 API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Проект на **Laravel 11**, представляющий собой REST API для учета оборудования и мебели. Реализована авторизация по **JWT**, использован **Docker** для контейнеризации, **MySQL** как СУБД и **Redis** для кеширования и очередей. Поддерживается автогенерация Swagger-документации.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Основной функционал
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- CRUD API для оборудования, мебели, кабинетов, площадок, сотрудников, перемещений и д.р.
+- JWT-аутентификация (через `tymon/jwt-auth`)
+- Swagger-документация по всем маршрутам
+- Ролевая модель доступа: администратор, инженер, сотрудник
+- Redis — кеширование и очереди
+- Laravel Job/Queue поддержка
+- Docker-окружение для разработки и деплоя
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🐳 Быстрый старт через Docker
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 1. Клонируйте репозиторий:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```bash
+git clone https://github.com/nikolaevNS1995/equipment-accounting-system.git
+cd equipment-accounting-system
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 2. Создайте `.env`:
 
-## Laravel Sponsors
+```bash
+cp .env.example .env
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Пример основных настроек:
 
-### Premium Partners
+```env
+APP_NAME=equipment_accouting
+APP_ENV=local
+APP_KEY=
+APP_URL=http://localhost
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+DB_CONNECTION=mysql
+DB_HOST=project_db
+DB_PORT=3306
+DB_DATABASE=lardocker
+DB_USERNAME=root
+DB_PASSWORD=root
 
-## Contributing
+CACHE_STORE=redis
+QUEUE_CONNECTION=redis
+REDIS_HOST=project_redis
+REDIS_CLIENT=predis
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+JWT_SECRET=
+```
 
-## Code of Conduct
+### 3. Запуск контейнеров
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+docker-compose up -d --build
+```
 
-## Security Vulnerabilities
+### 4. Инициализация проекта
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+docker exec -it app php artisan key:generate
+docker exec -it app php artisan jwt:secret
+docker exec -it app php artisan migrate --seed
+```
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🔐 Аутентификация через JWT
+
+Получите токен через `/api/auth/login`, отправив `email` и `password`.
+
+Пример запроса:
+
+```http
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "password"
+}
+```
+
+Ответ:
+
+```json
+{
+  "access_token": "your.jwt.token",
+  "token_type": "bearer",
+  "expires_in": 3600
+}
+```
+
+🔐 **Для всех защищённых маршрутов** добавляйте заголовок:
+
+```
+Authorization: Bearer your.jwt.token
+```
+
+---
+
+## 📚 Документация API
+
+- Swagger UI: [`/api/documentation`](http://localhost/api/documentation)
+- Генерация документации:
+
+```bash
+docker exec -it app php artisan l5-swagger:generate
+```
+
+---
+
+## 🧪 Тестирование
+
+```bash
+docker exec -it app php artisan test
+```
+
+---
+
+## 📌 Полезные команды
+
+```bash
+# Очистка кешей
+docker exec -it app php artisan optimize:clear
+
+# Очереди
+docker exec -it app php artisan queue:work
+
+# Повторная генерация ключей
+docker exec -it app php artisan key:generate
+docker exec -it app php artisan jwt:secret
+```
+
+---
+
+## 🗂️ Структура
+
+- `app/Models` — модели (Equipment, Category, etc.)
+- `app/Http/Controllers/Api` — контроллеры API
+- `app/Http/Middleware` — middleware (включая JWT)
+- `routes/api.php` — маршруты API
+- `config/l5-swagger.php` — настройки Swagger
+
+---
+
+## 📄 Лицензия
+
+MIT
+
+**Автор:** Николаев Никита Сергеевич 
+**Контакт:** nikolaevns1995@gmail.com

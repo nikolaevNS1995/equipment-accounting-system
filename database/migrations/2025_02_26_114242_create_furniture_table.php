@@ -13,7 +13,16 @@ return new class extends Migration
     {
         Schema::create('furniture', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('furniture_type_id');
+            $table->unsignedBigInteger('cabinet_id')->nullable();
+            $table->unsignedBigInteger('inventory_number');
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->index('cabinet_id');
+
+            $table->foreign('furniture_type_id')->references('id')->on('furniture_types')->onDelete('cascade');
+            $table->foreign('cabinet_id')->references('id')->on('cabinets')->onDelete('cascade');
         });
     }
 

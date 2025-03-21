@@ -16,8 +16,10 @@ class EquipmentTypeFactory extends Factory
      */
     public function definition(): array
     {
+        static $types = ['Компьютер', 'Принтер', 'Сканер', 'Монитор'];
+
         return [
-            //
+            'title' => array_shift($types),
         ];
     }
 }

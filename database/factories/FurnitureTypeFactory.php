@@ -16,8 +16,10 @@ class FurnitureTypeFactory extends Factory
      */
     public function definition(): array
     {
+        static $types = ['Стол', 'Стул', 'Шкаф', 'Тумбочка', 'Полка'];
+
         return [
-            //
+            'title' => array_shift($types),
         ];
     }
 }

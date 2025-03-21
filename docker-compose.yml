@@ -11,6 +11,8 @@ services:
         depends_on:
             - app
         container_name: project_nginx
+        networks:
+            - app-network
 
     app:
         build:
@@ -20,7 +22,13 @@ services:
             - ./:/var/www
         depends_on:
             - db
+            - redis
         container_name: project_app
+        environment:
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+        networks:
+            - app-network
 
     db:
         image: mysql:8.0
@@ -32,5 +40,25 @@ services:
             MYSQL_ROOT_PASSWORD: root
         ports:
             - 8101:3306
-        command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+        command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
         container_name: project_db
+        networks:
+            - app-network
+
+    redis:
+        image: "redis:alpine"
+        restart: always
+        ports:
+            - "6380:6379"
+        volumes:
+            - redis_data:/data
+        container_name: project_redis
+        networks:
+            - app-network
+
+volumes:
+    redis_data:
+
+networks:
+    app-network:
+        driver: bridge

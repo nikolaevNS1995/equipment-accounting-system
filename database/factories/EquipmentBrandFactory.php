@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\EquipmentType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +17,11 @@ class EquipmentBrandFactory extends Factory
      */
     public function definition(): array
     {
+        static $brands = ['Dell', 'HP', 'Lenovo', 'Asus', 'Apple'];
+
         return [
-            //
+            'equipment_type_id' => EquipmentType::inRandomOrder()->first()->id,
+            'title' => array_shift($brands),
         ];
     }
 }
